@@ -20,7 +20,7 @@
     "overwrite": false,
     "importAlias": true,
     "packageManager": "yarn",
-    "eas": false
+    "eas": true
   },
   "packageManager": {
     "type": "yarn",

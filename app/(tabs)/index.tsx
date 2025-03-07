@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-export const EditScreenInfo = ({ path }: { path: string }) => {
+export default function Home({ path }: { path: string }) {
   const title = 'Open up the code for this screen:';
   const description = 'Coucou';
 
@@ -15,7 +15,7 @@ export const EditScreenInfo = ({ path }: { path: string }) => {
       </View>
     </View>
   );
-};
+}
 
 const styles = {
   codeHighlightContainer: `rounded-md px-1`,
