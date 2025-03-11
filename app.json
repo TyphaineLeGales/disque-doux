@@ -46,14 +46,17 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.typhaine.diskDo"
+      "bundleIdentifier": "com.disquedoux.diskDo",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.typhaine.diskDo"
+      "package": "com.disquedoux.diskDo"
     },
     "extra": {
       "router": {
@@ -62,6 +65,7 @@
       "eas": {
         "projectId": "8558da4e-6d39-4232-a7bc-ef4c0344cb2f"
       }
-    }
+    },
+    "owner": "disque_doux"
   }
 }
