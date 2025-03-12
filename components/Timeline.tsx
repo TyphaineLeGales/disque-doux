@@ -6,9 +6,7 @@ import { useUserStore } from '@/stores/userStore';
 
 export const Timeline = () => {
   const riveComponentRef = useRef<RiveRef>(null);
-  //TODO - use persisted zustand state for level completion instead of local ref
-
-  const { levelCompleted } = useUserStore();
+  const { levelCompleted } = useUserStore(); // persisted state
 
   useEffect(() => {
     if (riveComponentRef.current) {
