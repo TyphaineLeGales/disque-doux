@@ -5,7 +5,7 @@ import Rive, { Fit, RiveRef } from 'rive-react-native';
 export const Timeline = () => {
   const riveComponentRef = useRef<RiveRef>(null);
   //TODO - use persisted zustand state for level completion instead of local ref
-  const levelCompletion = useRef(2);
+  const levelCompletion = useRef(1);
 
   useEffect(() => {
     if (riveComponentRef.current) {
@@ -16,7 +16,7 @@ export const Timeline = () => {
     <SafeAreaView className="flex-1 items-center justify-center ">
       <Rive
         ref={riveComponentRef}
-        resourceName="timeline2"
+        resourceName="timeline"
         fit={Fit.Contain}
         style={{
           width: '75%',

@@ -60,7 +60,7 @@ export default function Screw() {
     <SafeAreaView style={styles.container}>
       <Rive
         ref={riveComponentRef}
-        resourceName="screw41103"
+        resourceName="screw"
         fit={Fit.Contain}
         style={{ width: '100%' }}
         stateMachineName="screw "
