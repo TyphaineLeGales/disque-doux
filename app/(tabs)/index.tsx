@@ -1,28 +1,6 @@
-import { Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Timeline } from '@/components/Timeline';
 export default function Home({ path }: { path: string }) {
-  const title = 'Open up the code for this screen:';
-  const description = 'Coucou';
-
-  return (
-    <View>
-      <View className={styles.getStartedContainer}>
-        <Text className={styles.getStartedText}>{title}</Text>
-        <View className={styles.codeHighlightContainer + styles.homeScreenFilename}>
-          <Text>{path}</Text>
-        </View>
-        <Text className={styles.getStartedText}>{description}</Text>
-      </View>
-    </View>
-  );
+  return <Timeline />;
 }
-
-const styles = {
-  codeHighlightContainer: `rounded-md px-1`,
-  getStartedContainer: `items-center mx-12`,
-  getStartedText: `text-lg leading-6 text-center`,
-  helpContainer: `items-center mx-5 mt-4`,
-  helpLink: `py-4`,
-  helpLinkText: `text-center`,
-  homeScreenFilename: `my-2`,
-};
