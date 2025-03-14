@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 type State = {
   levelCompleted: number;
@@ -17,6 +18,9 @@ export const useUserStore = create<State>()(
         set((state) => ({ levelCompleted: state.levelCompleted + qty })),
       unsetIsFirstTime: () => set(() => ({ isFirstTime: false })),
     }),
-    { name: 'user-storage' }
+    {
+      name: 'user-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
   )
 );

@@ -12,8 +12,12 @@ export default function Home() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const loadingSpeed = useRef(2);
   const { isFirstTime } = useUserStore();
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
-  const timer = useRef<NodeJS.Timeout | string>('');
+  useEffect(() => {
+    console.log('Current isFirstTime state:', isFirstTime);
+  }, [isFirstTime]);
+
   useEffect(() => {
     if (loadingProgress < 1) {
       timer.current = setTimeout(
@@ -21,15 +25,15 @@ export default function Home() {
         1500
       );
     } else {
-      if (!isFirstTime) {
-        router.push('(tabs)');
-      } else {
-        router.push('/tutoriel');
-      }
+      setTimeout(() => {
+        router.replace(isFirstTime ? '/tutoriel' : '/start');
+      }, 100);
     }
+
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [loadingProgress]);
+  }, [loadingProgress, isFirstTime]);
+
   return <LoadingScreen progressValue={loadingProgress} />;
 }
