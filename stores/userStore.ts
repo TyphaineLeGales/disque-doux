@@ -7,6 +7,7 @@ type State = {
   isFirstTime: boolean;
   completeLevel: (qty: number) => void;
   unsetIsFirstTime: () => void;
+  reset: () => void;
 };
 
 export const useUserStore = create<State>()(
@@ -17,6 +18,7 @@ export const useUserStore = create<State>()(
       completeLevel: (qty: number) =>
         set((state) => ({ levelCompleted: state.levelCompleted + qty })),
       unsetIsFirstTime: () => set(() => ({ isFirstTime: false })),
+      reset: () => set(() => ({ levelCompleted: 0, isFirstTime: true })),
     }),
     {
       name: 'user-storage',
