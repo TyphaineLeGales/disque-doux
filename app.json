@@ -23,9 +23,7 @@
       [
         "expo-custom-assets",
         {
-          "assetsPaths": [
-            "./rive"
-          ]
+          "assetsPaths": ["./rive"]
         }
       ]
     ],
@@ -41,9 +39,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.disquedoux.diskDo",
@@ -64,7 +60,8 @@
       },
       "eas": {
         "projectId": "8558da4e-6d39-4232-a7bc-ef4c0344cb2f"
-      }
+      },
+      "isDevelopment": true
     },
     "owner": "disque_doux"
   }
