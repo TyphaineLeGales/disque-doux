@@ -6,17 +6,6 @@ export default function Screw() {
   // setting idle render retriggers a render
   const riveComponentRef = useRef<RiveRef>(null);
   const timer = useRef<NodeJS.Timeout | string>('');
-  //const touchPosition = useRef({ x: 0, y: 0 });
-
-  // Track touch position
-  //   const panResponder = PanResponder.create({
-  //     onStartShouldSetPanResponder: () => true,
-  //     onPanResponderGrant: (event) => {
-  //       const { locationX, locationY } = event.nativeEvent;
-  //       console.log('on pan responder', locationX, locationY);
-  //       touchPosition.current = { x: locationX, y: locationY };
-  //     },
-  //   });
 
   const [counter, setCounter] = useState(15);
   useEffect(() => {
