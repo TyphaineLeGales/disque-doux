@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useSharedValue, withDecay, useAnimatedReaction, runOnJS } from 'react-native-reanimated';
@@ -8,9 +8,9 @@ const THRESHOLD = 1000; // 10 turns
 export default function Test() {
   const riveComponentRef = useRef<RiveRef>(null);
   const offset = useSharedValue<number>(0);
-  const [isDone, setIsDone] = useState(false);
+  const isDone = useRef(false);
 
-  const panGesture = Gesture.Pan()
+  const panGesture = Gesture.Pan() // put in useMemo to avoid reevalution
     .onChange((event) => {
       offset.value += event.changeX;
     })
@@ -23,17 +23,18 @@ export default function Test() {
     });
 
   const updateRiveState = (num: number) => {
+    if (isDone.current) return;
     if (num !== THRESHOLD) {
-      riveComponentRef.current?.setInputState('main', 'progress', num % 100);
+      riveComponentRef.current?.setInputState('main', 'progress', num % 100); // modulo 100 === 1 turn -> we need to do several turns,
     } else {
-      setIsDone(true);
+      isDone.current = true;
       riveComponentRef.current?.fireStateAtPath('starsIn', 'stars');
     }
   };
 
   const cachedUpdate = useCallback(updateRiveState, []);
   useAnimatedReaction(
-    () => offset.value, // modulo 100 === 1 turn -> we need to do several turns,
+    () => offset.value,
     (data) => {
       runOnJS(cachedUpdate)(data);
     },
@@ -54,7 +55,6 @@ export default function Test() {
       <GestureDetector gesture={panGesture}>
         <View className="absolute h-full w-full" />
       </GestureDetector>
-      {isDone && <View className="absolute h-full w-full" />}
     </SafeAreaView>
   );
 }
