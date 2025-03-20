@@ -8,7 +8,6 @@ import { useUserStore } from '@/stores/userStore';
 export default function TutorialScreen() {
   const router = useRouter();
   const { unsetIsFirstTime } = useUserStore();
-  
   const onBtnPress = () => {
     unsetIsFirstTime();
     router.push('/(tabs)');
