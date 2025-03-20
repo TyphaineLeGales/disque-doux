@@ -63,7 +63,7 @@ export default function Screw() {
         resourceName="screw"
         fit={Fit.Contain}
         style={{ width: '100%' }}
-        stateMachineName="screw "
+        stateMachineName="screw"
         onStateChanged={handleStateChanges}
         onRiveEventReceived={onEvent}
       />
