@@ -57,6 +57,14 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
+      <Tabs.Screen
+        name="rive4"
+        options={{
+          title: '#4',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
+        }}
+      />
+    </Tabs>
     </GestureHandlerRootView>
   );
 }
