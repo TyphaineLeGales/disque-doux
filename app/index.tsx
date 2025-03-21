@@ -1,7 +1,7 @@
 import '../global.css';
 
 import { useRouter } from 'expo-router';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useUserStore } from '@/stores/userStore';

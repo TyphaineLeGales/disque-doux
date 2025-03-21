@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { SafeAreaView } from 'react-native';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 
@@ -8,8 +8,10 @@ export default function StartScreen() {
   const router = useRouter();
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
-    if (stateName === 'ExitState') {
-      router.push('/(tabs)');
+    if (stateName === 'out') {
+      setTimeout(() => {
+        router.push('/narration/1');
+      }, 1000);
     }
   };
 
@@ -17,7 +19,7 @@ export default function StartScreen() {
     <SafeAreaView className="flex-1">
       <Rive
         ref={riveComponentRef}
-        resourceName="start_screen"
+        resourceName="start"
         fit={Fit.Cover}
         style={{
           width: '100%',

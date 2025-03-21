@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useRef } from 'react';
+import { SafeAreaView } from 'react-native';
 import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
 
 export default function Tools() {
-  const [currentState, setCurrentState] = useState<string>('');
   const riveRef = useRef<RiveRef>(null);
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
@@ -15,7 +14,7 @@ export default function Tools() {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-slate-200">
+    <SafeAreaView className="items-center justify-center flex-1 bg-slate-200">
       <Rive
         ref={riveRef}
         resourceName="tools_choose"

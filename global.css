@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+    --color-red-100: FFE8E0; 
+  }
