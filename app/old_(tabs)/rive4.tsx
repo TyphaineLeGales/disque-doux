@@ -6,11 +6,11 @@ export default function Tools() {
   const riveRef = useRef<RiveRef>(null);
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
-    console.log('State changed:', { stateMachineName, stateName });
+    // console.log('State changed:', { stateMachineName, stateName });
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
-    console.log('Event received:', event);
+    // console.log('Event received:', event);
   };
 
   return (
@@ -18,7 +18,7 @@ export default function Tools() {
       <Rive
         ref={riveRef}
         resourceName="tools_choose"
-        artboardName="tools 2"
+        artboardName="tools"
         stateMachineName="Choose Tools"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
