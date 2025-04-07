@@ -7,25 +7,40 @@ type AssembleProps = {
   id: string;
 };
 
+type Direction = 'top' | 'left' | 'right';
+
+type CompletionState = {
+  [key in Direction]: number[];
+};
+
 export default function AssembleMecanics(props: AssembleProps) {
   const riveRef = useRef<RiveRef>(null);
   const zone = useRef('');
   const prevObjectId = useRef(0);
   const currObjectId = useRef(2); // should be updated dynamically on draggin event
-  // convention z up
-  const completionState = useRef({
+  const TOTAL_PIECES = 3;
+  const WIN_STATE = {
     top: [1],
-    left: [0],
+    left: [0, 2],
+    right: [],
+  };
+  const piecesPlacedCount = useRef(2);
+  const completionState = useRef<CompletionState>({
+    top: [1],
+    left: [0, 2],
     right: [],
   });
 
-  /* 
-    set currObjectId on dragging
-    update completion state 
-      - add currObjectId to correct axis id
-      - if prevObject === currObject id remove it to completion state
-    check for level completion when all pieces are placed
-  */
+  const hasWon = () => {
+    const answers: boolean[] = [];
+    (Object.keys(WIN_STATE) as Direction[]).forEach((key) => {
+      const arrOnCurrAxis = completionState.current[key];
+      arrOnCurrAxis.forEach((item, i) => {
+        answers.push(completionState.current[key][i] === WIN_STATE[key][i]);
+      });
+    });
+    return !answers.includes(false);
+  };
 
   const getIndexFromDirection = (dir: string) => {
     if (dir === 'top') return 0;
@@ -59,24 +74,27 @@ export default function AssembleMecanics(props: AssembleProps) {
       riveRef.current.fireState('main', 'triggerBounce'); // trigger onSnapEnd
 
       if (prevObjectId.current === currObjectId.current) {
-        // remove from previous position
-        const indexToRemove = currObjectId.current; // The index you want to remove
-
-        Object.keys(completionState.current).forEach((key) => {
+        const indexToRemove = currObjectId.current;
+        (Object.keys(completionState.current) as Direction[]).forEach((key) => {
           const arr = completionState.current[key];
           const idx = arr.indexOf(indexToRemove);
           if (idx !== -1) {
-            arr.splice(idx, 1); // Remove the index from the array
+            arr.splice(idx, 1);
           }
         });
+      } else {
+        piecesPlacedCount.current++;
       }
       completionState.current[zone.current].push(currObjectId.current);
       prevObjectId.current = currObjectId.current;
       console.log('completion state', completionState.current);
+
+      // Check success condition if all pieces are placed
+      if (piecesPlacedCount.current === TOTAL_PIECES) {
+        console.log('user has won ', hasWon());
+      }
     }
   };
-
-  // state based on
 
   return (
     <View className="h-full w-full flex-1">
