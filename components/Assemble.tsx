@@ -7,7 +7,7 @@ type AssembleProps = {
   id: string;
 };
 
-export default function Tools(props: AssembleProps) {
+export default function Assemble(props: AssembleProps) {
   const riveRef = useRef<RiveRef>(null);
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
@@ -25,7 +25,7 @@ export default function Tools(props: AssembleProps) {
   const onDisassemble = () => riveRef.current?.fireState('State Machine 1', 'Disassemble');
 
   return (
-    <View className="flex-1 w-full h-full">
+    <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
         resourceName="assemble"
@@ -37,7 +37,7 @@ export default function Tools(props: AssembleProps) {
           height: '100%',
         }}
       />
-      <View className="flex flex-row items-center justify-center w-full">
+      <View className="flex w-full flex-row items-center justify-center">
         <Button title="assemble" onPress={onAssemble} />
         <Button title="disassemble" onPress={onDisassemble} />
       </View>

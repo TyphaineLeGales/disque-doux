@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useRef } from 'react';
-import { Text } from 'react-native';
+import { Text, View, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 
@@ -24,10 +24,13 @@ export default function Sequence() {
         fit={Fit.Cover}
         style={{
           width: '100%',
-          height: '100%',
+          height: '90%',
         }}
         onStateChanged={handleStateChange}
       />
+      <View className="flex w-full flex-row items-center justify-center">
+        <Button title="find tools" onPress={onNext} />
+      </View>
     </SafeAreaView>
   );
 }
