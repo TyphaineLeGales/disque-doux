@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     if (loadingProgress < 1) {
       timer.current = setTimeout(
-        () => setLoadingProgress(loadingProgress + 0.1 * loadingSpeed.current),
+        () => setLoadingProgress(loadingProgress + 0.5 * loadingSpeed.current),
         1500
       );
     } else {
