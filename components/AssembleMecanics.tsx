@@ -6,16 +6,16 @@ type AssembleProps = {
   onDone: Function;
   id: string;
 };
-
 type Direction = 'top' | 'left' | 'right';
-
 type CompletionState = {
   [key in Direction]: number[];
 };
 
+// TODO - verify if logic works removing several pieces at a time
+
 export default function AssembleMecanics(props: AssembleProps) {
   const riveRef = useRef<RiveRef>(null);
-  const zone = useRef('');
+  const zone = useRef<Direction>('');
   const prevObjectId = useRef(0);
   const currObjectId = useRef(2); // should be updated dynamically on draggin event
   const TOTAL_PIECES = 3;
@@ -42,19 +42,15 @@ export default function AssembleMecanics(props: AssembleProps) {
     return !answers.includes(false);
   };
 
-  const getIndexFromDirection = (dir: string) => {
+  const getIndexFromDirection = (dir: Direction) => {
     if (dir === 'top') return 0;
-    if (dir === 'bottom') return 1;
+    // if (dir === 'bottom') return 1;
     if (dir === 'left') return 2;
     if (dir === 'right') return 3;
   };
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
-    //console.log('State changed:', { stateMachineName, stateName });
-    if (stateName.includes('zone')) {
-      zone.current = stateName.split('_')[1];
-      //console.log('name', stateName.split('_')[1]);
-    }
+    if (stateName.includes('zone')) zone.current = stateName.split('_')[1];
 
     if (stateName === 'dragging') {
       riveRef.current.setInputState('main', 'snap', -1); //non snap
@@ -65,8 +61,8 @@ export default function AssembleMecanics(props: AssembleProps) {
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     //console.log('Event received:', event);
     if (event.name === 'EndDrag') {
-      riveRef.current.setInputState('main', 'snap', getIndexFromDirection(zone.current));
       // trigger timeline corresponding to direction
+      riveRef.current.setInputState('main', 'snap', getIndexFromDirection(zone.current));
     }
 
     if (event.name === 'onSnap') {

@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Assemble from '@/components/Assemble';
+import AssembleAnimation from '@/components/AssembleAnimation';
 import AssembleMecanics from '@/components/AssembleMecanics';
 import Screw from '@/components/Screw';
 import Tools from '@/components/Tools';
@@ -24,8 +25,9 @@ export default function Sequence() {
         </Text>
         {currPhaseIndex === 0 && <Tools onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 1 && <Screw onDone={onPhaseDone} id={id} />}
-        {/* {currPhaseIndex === 2 && <Assemble onDone={onPhaseDone} id={id} />} */}
-        {currPhaseIndex === 2 && <AssembleMecanics onDone={onPhaseDone} id={id} />}
+        {/* {currPhaseIndex === 2 && <AssembleAnimation onDone={onPhaseDone} id={id} />} */}
+        {/* {currPhaseIndex === 2 && <AssembleMecanics onDone={onPhaseDone} id={id} />} */}
+        {currPhaseIndex === 2 && <Assemble onDone={onPhaseDone} id={id} />}
       </SafeAreaView>
     </GestureHandlerRootView>
   );

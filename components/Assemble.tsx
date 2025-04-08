@@ -1,46 +1,47 @@
 import React, { useRef } from 'react';
-import { Button, View } from 'react-native';
+import { View } from 'react-native';
 import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
-
 type AssembleProps = {
   onDone: Function;
   id: string;
 };
-
-export default function Assemble(props: AssembleProps) {
+export default function AssembleProto(props: AssembleProps) {
   const riveRef = useRef<RiveRef>(null);
+  const currObjectId = useRef<string>('-1');
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log('State changed:', { stateMachineName, stateName });
+    if (stateName.includes('onCurrentPiece')) {
+      console.log('currentIdIs', stateName.split('onCurrentPiece')[1]);
+      currObjectId.current = stateName.split('onCurrentPiece')[1];
+    }
+    if (stateName === 'dropOut') {
+      riveRef.current?.setInputState('State Machine 1', 'inventoryOpen', false);
+      riveRef.current?.setInputStateAtPath('is3D', true, currObjectId.current);
+    }
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     console.log('Event received:', event);
-    if (event.name === 'Drop') {
-      props.onDone();
-    }
+    // if (event.name === 'onCurrObjectSelected') {
+    //   console.log(event.properties);
+    //   currObjectId.current = event.properties.ID;
+    // }
   };
 
-  const onAssemble = () => riveRef.current?.fireState('State Machine 1', 'assemble');
-  const onDisassemble = () => riveRef.current?.fireState('State Machine 1', 'Disassemble');
-
+  //riveComponentRef.current?.setInputStateAtPath("is3D", true, `currObjectId`);
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="assemble"
+        resourceName="assemble_v3_6"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
         style={{
-          width: '100%',
-          height: '100%',
+          height: '80%',
         }}
       />
-      <View className="flex w-full flex-row items-center justify-center">
-        <Button title="assemble" onPress={onAssemble} />
-        <Button title="disassemble" onPress={onDisassemble} />
-      </View>
     </View>
   );
 }
