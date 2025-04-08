@@ -16,9 +16,18 @@ export default function AssembleProto(props: AssembleProps) {
       currObjectId.current = stateName.split('onCurrentPiece')[1];
     }
     if (stateName === 'dropOut') {
-      riveRef.current?.setInputState('State Machine 1', 'inventoryOpen', false);
       riveRef.current?.setInputStateAtPath('is3D', true, currObjectId.current);
+      riveRef.current?.setInputStateAtPath('isDragging', true, currObjectId.current);
+      riveRef.current?.setInputState('State Machine 1', 'inventoryOpen', false);
     }
+
+    if (stateName === 'onTop') riveRef.current?.fireStateAtPath('rotateTop', currObjectId.current);
+    if (stateName === 'onBottom')
+      riveRef.current?.fireStateAtPath('rotateBottom', currObjectId.current);
+    if (stateName === 'onLeft')
+      riveRef.current?.fireStateAtPath('rotateLeft', currObjectId.current);
+    if (stateName === 'onRight')
+      riveRef.current?.fireStateAtPath('rotateRight', currObjectId.current);
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
@@ -29,12 +38,11 @@ export default function AssembleProto(props: AssembleProps) {
     // }
   };
 
-  //riveComponentRef.current?.setInputStateAtPath("is3D", true, `currObjectId`);
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="assemble_v3_6"
+        resourceName="assemble_v3_8"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
