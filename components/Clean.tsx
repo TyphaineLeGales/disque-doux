@@ -32,7 +32,7 @@ const { width, height } = Dimensions.get('window');
 const IMAGE_SIZE = 200;
 const RAG_WIDTH = 70;
 const BRUSH_SIZE = 30;
-const CLEAN_THRESHOLD = 0.9;
+const CLEAN_THRESHOLD = 0.8;
 const GRID_SIZE = 10;
 
 export default function Clean(props: CleanProps) {
@@ -58,6 +58,19 @@ export default function Clean(props: CleanProps) {
   const translateX = useSharedValue(width * 0.75 - RAG_WIDTH/2);
   const translateY = useSharedValue((height - insets.bottom) * 0.75 - (RAG_WIDTH/ragRatio)/2);
   const cleanPath = useSharedValue<SkPath>(Skia.Path.Make());
+  const currentRotation = useSharedValue(0);
+
+  const getRotationAngle = useCallback((x: number, y: number) => {
+    'worklet';
+    const centerX = width / 2;
+    const centerY = (height - insets.top - insets.bottom) / 2;
+    const dx = centerX - x;
+    const dy = centerY - y;
+    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    angle += 90;
+    angle = ((angle + 180) % 360) - 180;
+    return angle;
+  }, [width, height, insets.top, insets.bottom]);
 
   const getGridPosition = useCallback((x: number, y: number) => {
     const relativeX = x - (width / 2 - IMAGE_SIZE / 2);
@@ -126,6 +139,14 @@ export default function Clean(props: CleanProps) {
         cleanPath.value.lineTo(centerX, centerY);
         runOnJS(updateGridAtPosition)(centerX, centerY);
       }
+
+      const targetRotation = getRotationAngle(centerX, centerY);
+      
+      let newRotation = targetRotation;
+      if (newRotation > 90) newRotation = 90;
+      if (newRotation < -90) newRotation = -90;
+      
+      currentRotation.value += (newRotation - currentRotation.value) * 0.1;
     })
     .onEnd(() => {
       runOnJS(setIsRagHeld)(false);
@@ -140,12 +161,16 @@ export default function Clean(props: CleanProps) {
     return p;
   }, []);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value }
-    ]
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    'worklet';
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { rotate: `${currentRotation.value}deg` }
+      ]
+    };
+  });
 
   const canvasStyle = useMemo(
     () => ({
