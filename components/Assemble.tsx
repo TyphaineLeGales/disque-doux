@@ -17,17 +17,21 @@ export default function AssembleProto(props: AssembleProps) {
     }
     if (stateName === 'dropOut') {
       riveRef.current?.setInputStateAtPath('is3D', true, currObjectId.current);
-      riveRef.current?.setInputStateAtPath('isDragging', true, currObjectId.current);
-      riveRef.current?.setInputState('State Machine 1', 'inventoryOpen', false);
     }
 
-    if (stateName === 'onTop') riveRef.current?.fireStateAtPath('rotateTop', currObjectId.current);
+    if (stateName === 'dropIn') {
+      riveRef.current?.setInputStateAtPath('is3D', false, currObjectId.current);
+      riveRef.current?.fireStateAtPath('returnToSlot', currObjectId.current);
+    }
+
+    if (stateName === 'onTop')
+      riveRef.current?.fireStateAtPath('rotateTop', `${currObjectId.current}`);
     if (stateName === 'onBottom')
-      riveRef.current?.fireStateAtPath('rotateBottom', currObjectId.current);
+      riveRef.current?.fireStateAtPath('rotateBottom', `${currObjectId.current}`);
     if (stateName === 'onLeft')
-      riveRef.current?.fireStateAtPath('rotateLeft', currObjectId.current);
+      riveRef.current?.fireStateAtPath('rotateLeft', `${currObjectId.current}`);
     if (stateName === 'onRight')
-      riveRef.current?.fireStateAtPath('rotateRight', currObjectId.current);
+      riveRef.current?.fireStateAtPath('rotateRight', `${currObjectId.current}`);
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
@@ -38,11 +42,13 @@ export default function AssembleProto(props: AssembleProps) {
     // }
   };
 
+  // on dropout
+
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="assemble_v3_8"
+        resourceName="assemble_v3_20"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
