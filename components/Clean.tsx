@@ -11,16 +11,17 @@ import {
   PaintStyle,
 } from '@shopify/react-native-skia';
 import * as Haptics from 'expo-haptics';
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Dimensions, StyleSheet, View, Image as RNImage } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { 
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   runOnJS
 } from 'react-native-reanimated';
+import Rive, { Fit, RiveRef } from 'rive-react-native';
+import { StainPosition } from '../utils/StainPosition';
 
 type CleanProps = {
   onDone: Function;
@@ -29,11 +30,11 @@ type CleanProps = {
 };
 
 const { width, height } = Dimensions.get('window');
-const IMAGE_SIZE = 200;
 const RAG_WIDTH = 70;
-const BRUSH_SIZE = 30;
+const BRUSH_SIZE = 50;
 const CLEAN_THRESHOLD = 0.8;
-const GRID_SIZE = 10;
+const GRID_SIZE = 5;
+const STAIN_SIZE = 130;
 
 export default function Clean(props: CleanProps) {
   const { debug = false } = props;
@@ -44,6 +45,7 @@ export default function Clean(props: CleanProps) {
   
   const stainImage = useImage(require('../assets/stain.png'));
   const insets = useSafeAreaInsets();
+  const riveRef = useRef<RiveRef>(null);
 
   useEffect(() => {
     RNImage.getSize(RNImage.resolveAssetSource(require('../assets/rag.png')).uri, 
@@ -72,15 +74,39 @@ export default function Clean(props: CleanProps) {
     return angle;
   }, [width, height, insets.top, insets.bottom]);
 
+  const imagePosition = useMemo(
+    () => StainPosition.calculatePosition(
+      width, 
+      height, 
+      insets.top, 
+      insets.bottom,
+      STAIN_SIZE,
+      72, // 70% depuis la gauche
+      45  // 40% depuis le haut
+    ),
+    [width, height, insets.top, insets.bottom]
+  );
+
+  const isInStain = useCallback((x: number, y: number) => {
+    return (
+      x >= imagePosition.x &&
+      x <= imagePosition.x + STAIN_SIZE &&
+      y >= imagePosition.y &&
+      y <= imagePosition.y + STAIN_SIZE
+    );
+  }, [imagePosition]);
+
   const getGridPosition = useCallback((x: number, y: number) => {
-    const relativeX = x - (width / 2 - IMAGE_SIZE / 2);
-    const relativeY = y - ((height - insets.top - insets.bottom) / 2 - IMAGE_SIZE / 2);
+    if (!isInStain(x, y)) return { x: -1, y: -1 };
+
+    const relativeX = x - imagePosition.x;
+    const relativeY = y - imagePosition.y;
     
-    const gridX = Math.floor((relativeX / IMAGE_SIZE) * GRID_SIZE);
-    const gridY = Math.floor((relativeY / IMAGE_SIZE) * GRID_SIZE);
+    const gridX = Math.floor((relativeX / STAIN_SIZE) * GRID_SIZE);
+    const gridY = Math.floor((relativeY / STAIN_SIZE) * GRID_SIZE);
     
     return { x: gridX, y: gridY };
-  }, [width, height, insets.top, insets.bottom]);
+  }, [imagePosition, isInStain]);
 
   const isInGrid = useCallback((x: number, y: number) => {
     return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
@@ -91,10 +117,10 @@ export default function Clean(props: CleanProps) {
     if (isInGrid(gridPos.x, gridPos.y)) {
       setGrid(prev => {
         const newGrid = [...prev];
-        newGrid[gridPos.x] = [...newGrid[gridPos.x]];
-        if (!newGrid[gridPos.x][gridPos.y]) {
-          newGrid[gridPos.x][gridPos.y] = true;
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        newGrid[gridPos.y] = [...newGrid[gridPos.y]];
+        if (!newGrid[gridPos.y][gridPos.x]) {
+          newGrid[gridPos.y][gridPos.x] = true;
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }
         return newGrid;
       });
@@ -113,8 +139,10 @@ export default function Clean(props: CleanProps) {
 
   useEffect(() => {
     if (getCleanedPercentage() >= CLEAN_THRESHOLD && !isCleaned) {
-      setIsCleaned(true);
-      props.onDone();
+      setTimeout(() => {
+        setIsCleaned(true);
+        props.onDone();      
+      }, 1000);
     }
   }, [grid, isCleaned, props, getCleanedPercentage]);
 
@@ -182,14 +210,6 @@ export default function Clean(props: CleanProps) {
     [height, insets.top, insets.bottom]
   );
 
-  const imagePosition = useMemo(
-    () => ({
-      x: width / 2 - IMAGE_SIZE / 2,
-      y: (height - insets.top - insets.bottom) / 2 - IMAGE_SIZE / 2,
-    }),
-    [height, insets.top, insets.bottom]
-  );
-
   // Style pour la grille de debug
   const debugGridStyle = useMemo(() => {
     const paint = Skia.Paint();
@@ -207,9 +227,9 @@ export default function Clean(props: CleanProps) {
   const renderDebugGrid = useCallback(() => {
     if (!debug) return null;
 
-    const cellSize = IMAGE_SIZE / GRID_SIZE;
-    const startX = width / 2 - IMAGE_SIZE / 2;
-    const startY = (height - insets.top - insets.bottom) / 2 - IMAGE_SIZE / 2;
+    const cellSize = STAIN_SIZE / GRID_SIZE;
+    const startX = imagePosition.x;
+    const startY = imagePosition.y;
     const cells = [];
 
     for (let i = 0; i < GRID_SIZE; i++) {
@@ -223,14 +243,14 @@ export default function Clean(props: CleanProps) {
             y={y}
             width={cellSize}
             height={cellSize}
-            paint={grid[i][j] ? debugCleanedStyle : debugGridStyle}
+            paint={grid[j][i] ? debugCleanedStyle : debugGridStyle}
           />
         );
       }
     }
 
     return <Group>{cells}</Group>;
-  }, [debug, grid, debugGridStyle, debugCleanedStyle, width, height, insets]);
+  }, [debug, grid, debugGridStyle, debugCleanedStyle, imagePosition]);
 
   const styles = useMemo(() => StyleSheet.create({
     container: {
@@ -252,13 +272,19 @@ export default function Clean(props: CleanProps) {
     <SafeAreaView style={styles.container}>
       {!isCleaned && (
         <View style={StyleSheet.absoluteFill}>
+          <Rive
+            ref={riveRef}
+            resourceName="clean"
+            fit={Fit.Cover}
+            style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
+          />
           <Canvas style={canvasStyle}>
             <Image
               image={stainImage}
               x={imagePosition.x}
               y={imagePosition.y}
-              width={IMAGE_SIZE}
-              height={IMAGE_SIZE}
+              width={STAIN_SIZE}
+              height={STAIN_SIZE}
             />
             <Path
               path={cleanPath}
@@ -272,7 +298,6 @@ export default function Clean(props: CleanProps) {
               style={[
                 styles.rag,
                 animatedStyle,
-                { opacity: isRagHeld ? 0.8 : 1 }
               ]}
             />
           </GestureDetector>
