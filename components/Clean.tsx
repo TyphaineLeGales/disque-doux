@@ -33,7 +33,7 @@ const { width, height } = Dimensions.get('window');
 const RAG_WIDTH = 70;
 const BRUSH_SIZE = 50;
 const CLEAN_THRESHOLD = 0.8;
-const GRID_SIZE = 5;
+const GRID_SIZE = 7;
 const STAIN_SIZE = 130;
 
 export default function Clean(props: CleanProps) {
