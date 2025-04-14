@@ -7,7 +7,12 @@ import { useLevelStore } from '../stores/levelStore';
 export const DebugPanel = () => {
   const { phaseIndex, setPhaseIndex, debugMode, level } = useLevelStore();
   const [inputValue, setInputValue] = useState(0);
+  const [show, setShow] = useState(true);
   const router = useRouter();
+
+  const toggleDebug = () => {
+    setShow((prev) => !prev);
+  };
   const updatePhase = () => {
     // eslint-disable-next-line radix
     const numericValue = parseInt(inputValue);
@@ -31,16 +36,21 @@ export const DebugPanel = () => {
 
   return (
     <View style={styles.panel}>
-      <View className="flex flex-row">
-        <Button title="Go to phase" onPress={updatePhase} color="white" />
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={inputValue}
-          onChangeText={handleChange}
-        />
-      </View>
-      <Button title="Jump to Level" onPress={goToLevel} color="white" />
+      <Button title="Toggle" onPress={toggleDebug} color="white" />
+      {show && (
+        <View>
+          <View className="flex flex-row">
+            <Button title="Go to phase" onPress={updatePhase} color="white" />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={inputValue}
+              onChangeText={handleChange}
+            />
+          </View>
+          <Button title="Jump to Level" onPress={goToLevel} color="white" />
+        </View>
+      )}
     </View>
   );
 };
@@ -49,8 +59,8 @@ const styles = StyleSheet.create({
   panel: {
     position: 'absolute',
     zIndex: 200,
-    bottom: 50,
-    right: 20,
+    bottom: 25,
+    right: 0,
     backgroundColor: '#000000aa',
     padding: 10,
     borderRadius: 10,
