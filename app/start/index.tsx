@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useRef } from 'react';
-import { SafeAreaView, Button, View } from 'react-native';
+import { View, Button } from 'react-native';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 
 export default function StartScreen() {
@@ -22,7 +22,7 @@ export default function StartScreen() {
   };
 
   return (
-    <SafeAreaView className="flex">
+    <View className="size-full flex-1">
       <Rive
         ref={riveComponentRef}
         resourceName="start"
@@ -37,6 +37,6 @@ export default function StartScreen() {
       <View className="flex w-full flex-row items-center justify-center">
         <Button title="start" onPress={onStart} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

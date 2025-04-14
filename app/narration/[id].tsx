@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useRef } from 'react';
 import { Text, View, Button } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 
 export default function Sequence() {
@@ -16,7 +15,7 @@ export default function Sequence() {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-[#FFE8E0]">
+    <View className="size-full bg-[#FFE8E0]">
       <Text className="text-xl font-bold">séquence de narration : {id}</Text>
       <Rive
         ref={riveComponentRef}
@@ -31,6 +30,6 @@ export default function Sequence() {
       <View className="flex w-full flex-row items-center justify-center">
         <Button title="find tools" onPress={onNext} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

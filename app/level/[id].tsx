@@ -1,8 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import * as React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Assemble from '@/components/Assemble';
 import AssembleAnimation from '@/components/AssembleAnimation';
@@ -28,8 +27,8 @@ export default function Sequence() {
   };
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView className="flex-1 items-center justify-center bg-[#FFE8E0]">
+    <GestureHandlerRootView className="size-full">
+      <View className="size-full bg-[#FFE8E0]">
         <Text>
           Level : {id}, Phase: {PHASES[currPhaseIndex]}
         </Text>
@@ -40,7 +39,7 @@ export default function Sequence() {
         {currPhaseIndex === 0 && <Assemble onDone={onPhaseDone} id={id} />}
         {/* {currPhaseIndex === 0 && <Clean onDone={onPhaseDone} id={id} />} */}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
