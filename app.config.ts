@@ -5,7 +5,7 @@ const IS_PREVIEW = process.env.APP_VARIANT === 'preview'; // internal test build
 
 const getIdentifier = () => {
   console.log('app variant', process.env.APP_VARIANT);
-  let baseId = 'com.disquedoux.diskDo';
+  let baseId = 'com.amandine.diskDo';
   if (IS_DEV) baseId += '.dev';
   if (IS_PREVIEW) baseId += '.preview';
   console.log('identifier', baseId);
