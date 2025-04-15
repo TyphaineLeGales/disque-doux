@@ -1,0 +1,337 @@
+{
+    "id": "951393",
+    "location": {
+        "name": "London",
+        "slug": "london",
+        "admin1Name": "England",
+        "admin1Code": "eng",
+        "admin1Slug": "england",
+        "admin2Code": "gla",
+        "admin2Name": "Greater London",
+        "admin2Slug": "greater-london",
+        "countryName": "United Kingdom",
+        "countryCode": "gb",
+        "countrySlug": "united-kingdom",
+        "countryIso3Code": "gbr",
+        "continent": "continentcode",
+        "continentName": "EU",
+        "continentSlug": "europe",
+        "coordinates": {
+            "lat": 51.50853,
+            "lon": -0.12574
+        }
+    },
+    "user": {
+        "id": "4213433",
+        "firstName": "Maneesh",
+        "joinedDate": "2022-07-22T11:17:38",
+        "expiryDate": "2025-05-27",
+        "profilePhoto": {
+            "id": "9967435",
+            "publicId": "remote_media/media/photo/04/ed521f33944492aef576c832fa1e62.jpg"
+        },
+        "isReferred": false,
+        "referredCount": 0,
+        "membershipTier": "standard"
+    },
+    "status": "approved",
+    "title": "Apartment In Central London With A Show Cocker Spaniel To Play With",
+    "introduction": "Hey there! I'm a single dog dad with a passion for the great outdoors, always on the lookout for the next adventure. My furry best friend means the world to me, and I'm seeking a reliable, loving dog sitter who can provide excellent care while I explore and travel the globe. If you love dogs and enjoy spending time with them, let's chat!\n\nI would like a one day handover period so that you can get to know Millie as I will be leaving my flat at 6am on the 17th July",
+    "features": "My 2-bedroom apartment located in the vibrant heart of Central London. This stylish residence boasts an open-plan kitchen and living room, designed for comfort and functionality. Step up to the shared rooftop to soak in stunning views of the city skyline and Canary Wharf. You'll be just a stone's throw away from fantastic bars and restaurants in Canary Wharf and enjoy easy access to all that Central London has to offer. Perfect for urban dwellers seeking both convenience and a touch of luxury.",
+    "responsibilities": "Millie is a 3 year old cocker spaniel. Her routine is as follows:\n- Wake up at 7am and give her breakfast\n- After breakfast take her for a 30mins walk where she will have a pee/poo\n- Go for a walk for 25 mins at 12 where she will need a pee\n- 3pm she will likely need a pee if she is not on her own\n- 5.30pm giver her dinner followed by a 45 mins walk where she may pee/poo\n- 8pm a pee stop if you are indoors with her\n- 10pm (before bed) take her for a pee\n\nMillie can be by herself for up to 4 hours if needed\n\nWatering my plants once a week would be great",
+    "indexedDate": "2025-04-13T19:26:33.730797",
+    "localAttractions": [
+        "city"
+    ],
+    "pets": [
+        {
+            "photos": [
+                {
+                    "id": "9967475",
+                    "publicId": "remote_media/media/photo/5c/c3c9b581c340c79670406aa3316218.jpg"
+                },
+                {
+                    "id": "9967476",
+                    "publicId": "remote_media/media/photo/c5/52bcfcf1f44313b61df25e42b70ac4.jpg"
+                },
+                {
+                    "id": "9967478",
+                    "publicId": "remote_media/media/photo/18/6412fc113f4e8d8e79b6814f84f2ca.jpg"
+                }
+            ],
+            "yearOfBirth": 2021,
+            "breed": "Cocker Spaniel",
+            "name": "Millie",
+            "animal": {
+                "name": "dog",
+                "slug": "dogs"
+            }
+        }
+    ],
+    "photos": [
+        {
+            "id": "9967439",
+            "publicId": "remote_media/media/photo/01/883d7596444b54ab7da165e7763a4a.jpg"
+        },
+        {
+            "id": "9967442",
+            "publicId": "remote_media/media/photo/55/303e0dcc514574b363f043def3df7b.jpg"
+        },
+        {
+            "id": "9967445",
+            "publicId": "remote_media/media/photo/03/fc063a78fa4ca0b4e7d1dfbd4d9909.jpg"
+        },
+        {
+            "id": "9967447",
+            "publicId": "remote_media/media/photo/60/59f7c38fbe4ac7b8fa524446f6b19e.jpg"
+        },
+        {
+            "id": "9967454",
+            "publicId": "remote_media/media/photo/31/34aafd467d4568af4d4bdc8712c1ae.jpg"
+        }
+    ],
+    "assignments": [
+        {
+            "id": "1156471",
+            "startDate": "2024-06-18",
+            "endDate": "2024-06-30",
+            "profile": {
+                "id": "4883710",
+                "user": {
+                    "id": "8956280",
+                    "firstName": "Rosie",
+                    "joinedDate": "2024-04-27T14:51:22",
+                    "expiryDate": "2025-04-27",
+                    "profilePhoto": {
+                        "id": "9704368",
+                        "publicId": "remote_media/media/photo/60/55fd575521449e87ea25d1a74233b1.jpg"
+                    },
+                    "membershipTier": "basic"
+                }
+            },
+            "numberOfApplicants": 1,
+            "durationInDays": 12,
+            "feedback": {
+                "version": 2,
+                "description": "Millie is an adorable dog with a lot of energy! She likes company and watching ducks at the nearby canals. Maneesh communicated well throughout our stay and we loved the rooftop garden in his apartment block.",
+                "communication": 5,
+                "hospitality": 5,
+                "cleanliness": 5,
+                "petBehaviour": 5,
+                "accuracyOfListing": 5,
+                "sentAt": "2024-07-05T21:02:13",
+                "recommended": 5
+            },
+            "lastModified": "2024-06-02T12:31:55",
+            "isReviewing": true,
+            "isApproximateDates": false,
+            "isConfirmed": true
+        },
+        {
+            "id": "1155062",
+            "startDate": "2024-07-16",
+            "endDate": "2024-07-31",
+            "profile": {
+                "id": "4999055",
+                "user": {
+                    "id": "9184288",
+                    "firstName": "Jessica",
+                    "joinedDate": "2024-05-25T08:29:59",
+                    "expiryDate": "2025-06-27",
+                    "profilePhoto": {
+                        "id": "9949425",
+                        "publicId": "remote_media/media/photo/c2/5a75ee1cac454d82be0affccb68c51.jpeg"
+                    },
+                    "membershipTier": "standard"
+                }
+            },
+            "numberOfApplicants": 1,
+            "durationInDays": 15,
+            "feedback": {
+                "version": 2,
+                "description": "It was an absolute pleasure taking care of Millie. She had most beautiful and loving personality, I made a best friend straight away and was sad to leave. Maneesh had incredible communication leading up to the sit and all questions were answered promptly and well. I felt very comfortable during my entire stay, the apartment was very clean and well maintained. I would definitely house sit again for both Millie and Maneesh! Fantastic location and couldn't recommend more!",
+                "communication": 5,
+                "hospitality": 5,
+                "cleanliness": 5,
+                "petBehaviour": 5,
+                "accuracyOfListing": 5,
+                "sentAt": "2024-08-04T22:33:02",
+                "recommended": 5
+            },
+            "lastModified": "2024-06-02T15:25:06",
+            "isReviewing": true,
+            "isApproximateDates": false,
+            "isConfirmed": true
+        },
+        {
+            "id": "1223706",
+            "startDate": "2024-08-08",
+            "endDate": "2024-08-11",
+            "profile": {
+                "id": "3535849",
+                "user": {
+                    "id": "6330135",
+                    "firstName": "Tegan",
+                    "joinedDate": "2023-05-11T05:16:50",
+                    "expiryDate": "2025-05-26",
+                    "profilePhoto": {
+                        "id": "7099190",
+                        "publicId": "remote_media/media/photo/f8/833e36dd5e428f9962f66bd4c68f62.jpeg"
+                    },
+                    "membershipTier": "standard"
+                }
+            },
+            "numberOfApplicants": 1,
+            "durationInDays": 3,
+            "feedback": {
+                "version": 2,
+                "description": "We had a very positive experience house and pet sitting for Maneesh, communication was always prompt, Millie is a very kind loving dog and apartment was very nice and clean. We enjoyed walking Millie all around the area, she was a pleasure to look after.",
+                "communication": 5,
+                "hospitality": 5,
+                "cleanliness": 5,
+                "petBehaviour": 5,
+                "accuracyOfListing": 5,
+                "sentAt": "2024-08-13T23:11:49",
+                "recommended": 5
+            },
+            "lastModified": "2024-08-06T19:16:04",
+            "isReviewing": true,
+            "isApproximateDates": false,
+            "isConfirmed": true
+        },
+        {
+            "id": "1213807",
+            "startDate": "2024-08-15",
+            "endDate": "2024-08-20",
+            "profile": {
+                "id": "4294098",
+                "user": {
+                    "id": "7824552",
+                    "firstName": "Quesia",
+                    "joinedDate": "2023-11-30T11:34:28",
+                    "expiryDate": "2025-02-16",
+                    "profilePhoto": {
+                        "id": "10608291",
+                        "publicId": "remote_media/media/photo/be/4f4739f662490eb3ef6f02da49ec41.png"
+                    },
+                    "membershipTier": "basic"
+                }
+            },
+            "numberOfApplicants": 1,
+            "durationInDays": 5,
+            "feedback": {
+                "version": 2,
+                "description": "Amazing experience taking care of Millie and felt very welcome by Maneesh. We feel grateful to have had the opportunity to help both of them! Super cool location, a few minutes walk from Canary Warth and of course the legend Gandalfs Staff at The Vine as your local pub. Super experience!",
+                "communication": 5,
+                "hospitality": 5,
+                "cleanliness": 5,
+                "petBehaviour": 5,
+                "accuracyOfListing": 5,
+                "sentAt": "2024-08-23T16:31:59",
+                "reply": "Hi All, apologies for not sharing a review in time. Hope you can use this message if needed. You guys were absolutely amazing throughout and really loved and looked after millie. I would obviously recommend you both and would give you 5 stars",
+                "replySentAt": "2024-09-16T19:37:57",
+                "recommended": 5
+            },
+            "lastModified": "2024-07-27T17:17:45",
+            "isReviewing": false,
+            "isApproximateDates": false,
+            "isConfirmed": true
+        },
+        {
+            "id": "1407404",
+            "startDate": "2025-03-19",
+            "endDate": "2025-03-29",
+            "profile": {
+                "id": "5300761",
+                "user": {
+                    "id": "9767684",
+                    "firstName": "Sofiya",
+                    "joinedDate": "2024-07-28T19:39:21",
+                    "expiryDate": "2025-12-19",
+                    "profilePhoto": {
+                        "id": "11675022",
+                        "publicId": "remote_media/media/photo/34/5855eee27046bd941631b3a2ba5b61.jpg"
+                    },
+                    "membershipTier": "standard"
+                }
+            },
+            "numberOfApplicants": 1,
+            "durationInDays": 10,
+            "feedback": {
+                "version": 2,
+                "description": "Maneesh was very welcoming and has a great apartment! We stayed in a guest room and had everything we could have needed to feel comfortable. \nMillie is a gorgeous dog, very well educated and playful. She was sleeping with us and loved to sit on the lap as much as she could 😅 \nShe's totally fine to be taken for long walks and behaves well in crowded places. \nWe will miss her! She's really beautiful dog and Maneesh is a lucky man to have her 😊",
+                "communication": 5,
+                "hospitality": 5,
+                "cleanliness": 5,
+                "petBehaviour": 5,
+                "accuracyOfListing": 5,
+                "sentAt": "2025-03-30T19:17:55",
+                "recommended": 5
+            },
+            "lastModified": "2025-02-16T10:17:20",
+            "isReviewing": true,
+            "isApproximateDates": false,
+            "isConfirmed": true
+        },
+        {
+            "id": "1477857",
+            "startDate": "2025-05-13",
+            "endDate": "2025-05-18",
+            "numberOfApplicants": 0,
+            "durationInDays": 5,
+            "lastModified": "2025-04-13T20:26:33",
+            "isReviewing": false,
+            "isApproximateDates": false,
+            "isConfirmed": false
+        }
+    ],
+    "disabledAccess": false,
+    "published": "2025-04-13T20:26:34",
+    "homeType": "apartment",
+    "familyFriendly": false,
+    "amenities": {
+        "bedTypes": [
+            "double"
+        ],
+        "hasBedding": true,
+        "storageTypes": [
+            "wardrobe"
+        ],
+        "heatingTypes": [
+            "central"
+        ],
+        "wifiType": "highSpeed",
+        "workspaceTypes": [
+            "desk"
+        ],
+        "hasSofa": true,
+        "hasDiningArea": true,
+        "tvTypes": [
+            "streamingServices",
+            "cable"
+        ],
+        "hasOven": true,
+        "hasMicrowave": true,
+        "hasCoffeeMaker": true,
+        "hasToaster": true,
+        "hasKettle": true,
+        "hasFridge": true,
+        "hasFreezer": true,
+        "hasCookingBasics": true,
+        "hasBlender": true,
+        "hasBath": true,
+        "hasShower": true,
+        "hasShampoo": true,
+        "hasHairdryer": true,
+        "hasBathroomEssentials": true,
+        "hasBalcony": true,
+        "hasCommunalGardens": true,
+        "hasFireAlarm": true,
+        "hasCarbonMonoxideAlarm": true,
+        "hasWasher": true,
+        "hasDryer": true,
+        "hasVacuum": true,
+        "hasIron": true
+    },
+    "isAccessibleByPublicTransport": true
+} 

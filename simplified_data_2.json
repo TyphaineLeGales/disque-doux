@@ -1,0 +1,108 @@
+{
+    "location": {
+        "city": "London",
+        "neighborhood": "Bexleyheath (south-east London)",
+        "description": "Very accessible to public transport with three national rail stations within 1-mile radius and the Elizabeth line from Abby wood station is just a 10-minute drive. The nearest grocery stores are Aldi, Lidl, Asda and Sainsburys, all within a mile radius. We live on a quiet road which is very safe and crime-free. There are lots of parks, pubs, and restaurants around."
+    },
+    "house": {
+        "type": "four-bedroom detached Bungalow",
+        "description": "House with a driveway and two sides facing a garden. Quiet and safe neighborhood.",
+        "features": [
+            "driveway",
+            "garden",
+            "quiet location",
+            "easy public transport access"
+        ]
+    },
+    "pets": [
+        {
+            "name": "Shoni (Kazuya)",
+            "type": "dog",
+            "breed": "Pomeranian",
+            "age": 4,
+            "description": "Likes to keep to himself, plays with Lizzie",
+            "needs": {
+                "walks": "two 30-minute walks daily (on lead)",
+                "food": "twice daily (lunch and dinner)"
+            }
+        },
+        {
+            "name": "Lizzie",
+            "type": "dog",
+            "breed": "Pomeranian",
+            "age": 3,
+            "description": "Loves to play fetch, very active",
+            "needs": {
+                "walks": "two 30-minute walks daily (on lead)",
+                "food": "twice daily (lunch and dinner)",
+                "play": "loves playing fetch"
+            }
+        },
+        {
+            "name": "Milli",
+            "type": "cat",
+            "breed": "British Shorthair",
+            "age": 1,
+            "description": "Chilled kitty, likes to stay in your vicinity, loves to play prey catching game",
+            "needs": {
+                "food": "wet food twice daily + treats three times daily",
+                "litter": "cleaned once daily, changed weekly",
+                "play": "loves playing with dangling toys"
+            }
+        }
+    ],
+    "availability": {
+        "next": {
+            "start": "2025-06-22",
+            "end": "2025-06-29",
+            "duration": 7,
+            "note": "Owners will be present on 22nd to introduce pets and routine"
+        }
+    },
+    "reviews": {
+        "rating": 5,
+        "highlights": [
+            "wonderful hosts",
+            "beautiful home",
+            "convenient location",
+            "adorable pets"
+        ],
+        "feedback": [
+            "The two Pom Poms were so kind and playful. Lizzie loves her ball game and Shoni is more reserved but equally lovely.",
+            "The location is absolutely fantastic with everything you need within walking distance.",
+            "Shoni and Lizzy are pomeranians that don't disappoint! Full of confidence and personality.",
+            "Milli is a curious sweetheart always seeking the attention of her pomeranian siblings."
+        ]
+    },
+    "amenities": {
+        "internet": "high speed WiFi",
+        "kitchen": {
+            "appliances": [
+                "gas stove",
+                "microwave",
+                "coffee maker",
+                "toaster",
+                "kettle",
+                "fridge",
+                "freezer",
+                "dishwasher",
+                "blender"
+            ]
+        },
+        "laundry": true,
+        "garden": true,
+        "entertainment": [
+            "streaming services",
+            "TV"
+        ],
+        "bedroom": {
+            "bed_type": "king",
+            "has_bedding": true
+        },
+        "bathroom": {
+            "has_bath": true,
+            "has_shower": true,
+            "essentials": true
+        }
+    }
+} 
