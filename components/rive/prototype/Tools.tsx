@@ -11,12 +11,8 @@ export default function Tools(props: ToolsProps) {
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log('State changed:', { stateMachineName, stateName });
-  };
-
-  const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
-    console.log('Event received:', event);
-    if (event.name === 'Drop') {
-      setTimeout(props.onDone, 500);
+    if (stateName === 'ExitState') {
+      props.onDone();
     }
   };
 
@@ -24,10 +20,9 @@ export default function Tools(props: ToolsProps) {
     <Rive
       ref={riveRef}
       resourceName="tools_choose"
-      artboardName="tools 2"
+      artboardName="tools"
       stateMachineName="Choose Tools"
       onStateChanged={handleStateChange}
-      onRiveEventReceived={handleRiveEvent}
       fit={Fit.Contain}
       style={{
         width: '100%',
