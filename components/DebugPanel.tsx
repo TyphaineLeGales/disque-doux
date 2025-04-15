@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { View, TextInput, StyleSheet, Button } from 'react-native';
 
 import { useLevelStore } from '../stores/levelStore';
 
 export const DebugPanel = () => {
-  const { phaseIndex, setPhaseIndex, debugMode, level } = useLevelStore();
+  const { setPhaseIndex, debugMode, level } = useLevelStore();
   const [inputValue, setInputValue] = useState(0);
   const [show, setShow] = useState(true);
   const router = useRouter();

@@ -18,7 +18,7 @@ import Animated, { useAnimatedStyle, useSharedValue, runOnJS } from 'react-nativ
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 
-import { StainPosition } from '../utils/StainPosition';
+import { StainPosition } from '@/utils/StainPosition';
 
 type CleanProps = {
   onDone: Function;
@@ -44,13 +44,13 @@ export default function Clean(props: CleanProps) {
       .map(() => Array(GRID_SIZE).fill(false))
   );
 
-  const stainImage = useImage(require('../assets/stain.png'));
+  const stainImage = useImage(require('../../../assets/stain.png'));
   const insets = useSafeAreaInsets();
   const riveRef = useRef<RiveRef>(null);
 
   useEffect(() => {
     RNImage.getSize(
-      RNImage.resolveAssetSource(require('../assets/rag.png')).uri,
+      RNImage.resolveAssetSource(require('../../../assets/rag.png')).uri,
       (width, height) => {
         setRagRatio(width / height);
       }
@@ -310,7 +310,7 @@ export default function Clean(props: CleanProps) {
           </Canvas>
           <GestureDetector gesture={gesture}>
             <Animated.Image
-              source={require('../assets/rag.png')}
+              source={require('../../../assets/rag.png')}
               style={[styles.rag, animatedStyle]}
             />
           </GestureDetector>
