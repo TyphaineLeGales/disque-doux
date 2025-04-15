@@ -39,25 +39,35 @@ const GRID_SIZE = 7;
 const STAIN_SIZE = 130;
 
 export default function Clean(props: CleanProps) {
-  const { debug = false} = props;
+  const { debug = true} = props;
   const [isCleaned, setIsCleaned] = useState(false);
   const [isRagHeld, setIsRagHeld] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [ragRatio, setRagRatio] = useState(1);
-  const [grids, setGrids] = useState<boolean[][][]>(
-    Array(4).fill(null).map(() => 
-      Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false))
-    )
+  const [grid0, setGrid0] = useState<boolean[][]>(() => 
+    Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false))
+  );
+  const [grid1, setGrid1] = useState<boolean[][]>(() => 
+    Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false))
+  );
+  const [grid2, setGrid2] = useState<boolean[][]>(() => 
+    Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false))
+  );
+  const [grid3, setGrid3] = useState<boolean[][]>(() => 
+    Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false))
   );
   const [loadedImages, setLoadedImages] = useState<boolean[]>([false, false, false, false]);
   const [currentFaceIdState, setCurrentFaceIdState] = useState(stainConfig.defaultFaceId);
   
+  const insets = useSafeAreaInsets();
+
   const isMenuMode = useSharedValue(false);
   const touchStartX = useSharedValue(0);
   const touchStartY = useSharedValue(0);
   const pressProgress = useSharedValue(0);
   const currentDirection = useSharedValue(0);
   const currentFaceId = useSharedValue(stainConfig.defaultFaceId);
+  const isRagHeldValue = useSharedValue(false);
 
   // Fonction pour obtenir l'index de la face suivante
   const getNextFaceIndex = useCallback((currentIndex: number, direction: number) => {
@@ -65,6 +75,43 @@ export default function Clean(props: CleanProps) {
     const nextIndex = (currentIndex + (direction === 1 ? 1 : -1) + 4) % 4;
     return nextIndex;
   }, []);
+
+  const cleanPath0 = useSharedValue<SkPath>(Skia.Path.Make());
+  const cleanPath1 = useSharedValue<SkPath>(Skia.Path.Make());
+  const cleanPath2 = useSharedValue<SkPath>(Skia.Path.Make());
+  const cleanPath3 = useSharedValue<SkPath>(Skia.Path.Make());
+  const currentRotation = useSharedValue(0);
+
+  const imagePositions = useMemo(
+    () => {
+      const centerX = width / 2;
+      const centerY = (height - insets.top - insets.bottom) / 2;
+      
+      // On calcule les positions pour toutes les taches
+      return stainConfig.stains.map(stain => ({
+        x: centerX + stain.position.x - STAIN_SIZE / 2,
+        y: centerY + stain.position.y - STAIN_SIZE / 2
+      }));
+    },
+    [width, height, insets.top, insets.bottom]
+  );
+
+  const getStainPosition = useCallback((faceId: number) => {
+    'worklet';
+    return imagePositions[faceId];
+  }, [imagePositions]);
+
+  // Fonction pour obtenir le chemin de nettoyage actuel
+  const getCurrentCleanPath = useCallback(() => {
+    'worklet';
+    switch(currentFaceId.value) {
+      case 0: return cleanPath0;
+      case 1: return cleanPath1;
+      case 2: return cleanPath2;
+      case 3: return cleanPath3;
+      default: return cleanPath0;
+    }
+  }, [currentFaceId.value]);
 
   const updateFaceId = useCallback((direction: number) => {
     if (direction === 0) return;
@@ -83,13 +130,6 @@ export default function Clean(props: CleanProps) {
     // Mise à jour de la face et du solo dans Rive
     riveRef.current?.setInputStateAtPath("FaceId", newFaceId, "Object");
     riveRef.current?.setInputStateAtPath("solo", newFaceId, "Object");
-    
-    // Réinitialiser la grille pour la nouvelle face
-    setGrids(prev => {
-      const newGrids = [...prev];
-      newGrids[newFaceId] = Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false));
-      return newGrids;
-    });
   }, [currentFaceId.value]);
 
   // Effet pour synchroniser l'état initial
@@ -149,7 +189,6 @@ export default function Clean(props: CleanProps) {
     setCurrentFaceIdState(currentFaceId.value);
   }, [currentFaceId.value]);
 
-  const insets = useSafeAreaInsets();
   const riveRef = useRef<RiveRef>(null);
 
   useEffect(() => {
@@ -164,8 +203,39 @@ export default function Clean(props: CleanProps) {
   const startY = useSharedValue((height - insets.bottom) * 0.75 - (RAG_WIDTH/ragRatio)/2);
   const translateX = useSharedValue(width * 0.75 - RAG_WIDTH/2);
   const translateY = useSharedValue((height - insets.bottom) * 0.75 - (RAG_WIDTH/ragRatio)/2);
-  const cleanPath = useSharedValue<SkPath>(Skia.Path.Make());
-  const currentRotation = useSharedValue(0);
+
+  const getRelativePosition = useCallback((x: number, y: number) => {
+    'worklet';
+    const currentPosition = getStainPosition(currentFaceId.value);
+    return {
+      x: x - currentPosition.x,
+      y: y - currentPosition.y
+    };
+  }, [currentFaceId.value, getStainPosition]);
+
+  const getDirection = useCallback((dx: number, dy: number) => {
+    'worklet';
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 50) return 0;
+    
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx > 0) return 1;
+      if (dx < 0) return 3;
+    }
+    return 0;
+  }, []);
+
+  const isPointOnRag = useCallback((x: number, y: number) => {
+    'worklet';
+    const margin = 20;
+    const ragBounds = {
+      left: translateX.value - margin,
+      right: translateX.value + RAG_WIDTH + margin,
+      top: translateY.value - margin,
+      bottom: translateY.value + (RAG_WIDTH/ragRatio) + margin
+    };
+    return x >= ragBounds.left && x <= ragBounds.right && y >= ragBounds.top && y <= ragBounds.bottom;
+  }, [translateX.value, translateY.value, ragRatio]);
 
   const getRotationAngle = useCallback((x: number, y: number) => {
     'worklet';
@@ -178,25 +248,6 @@ export default function Clean(props: CleanProps) {
     angle = ((angle + 180) % 360) - 180;
     return angle;
   }, [width, height, insets.top, insets.bottom]);
-
-  const imagePositions = useMemo(
-    () => {
-      const centerX = width / 2;
-      const centerY = (height - insets.top - insets.bottom) / 2;
-      
-      // On calcule les positions pour toutes les taches
-      return stainConfig.stains.map(stain => ({
-        x: centerX + stain.position.x - STAIN_SIZE / 2,
-        y: centerY + stain.position.y - STAIN_SIZE / 2
-      }));
-    },
-    [width, height, insets.top, insets.bottom]
-  );
-
-  const getStainPosition = useCallback((faceId: number) => {
-    // On utilise directement l'index de la face
-    return imagePositions[faceId];
-  }, [imagePositions]);
 
   const isInStain = useCallback((x: number, y: number) => {
     const currentPosition = getStainPosition(currentFaceIdState);
@@ -225,40 +276,65 @@ export default function Clean(props: CleanProps) {
     return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
   }, []);
 
+  const getCurrentStainId = useCallback((x: number, y: number) => {
+    const currentPosition = getStainPosition(currentFaceIdState);
+    for (let stainId = 0; stainId < stainConfig.stains.length; stainId++) {
+      const stain = stainConfig.stains[stainId];
+      const stainX = currentPosition.x + stain.position.x;
+      const stainY = currentPosition.y + stain.position.y;
+      if (
+        x >= stainX && x <= stainX + STAIN_SIZE &&
+        y >= stainY && y <= stainY + STAIN_SIZE
+      ) {
+        return stainId;
+      }
+    }
+    return -1;
+  }, [getStainPosition, currentFaceIdState]);
+
   const updateGridAtPosition = useCallback((x: number, y: number) => {
     const gridPos = getGridPosition(x, y);
     if (isInGrid(gridPos.x, gridPos.y)) {
-      setGrids(prev => {
-        const newGrids = [...prev];
-        newGrids[currentFaceId.value] = [...newGrids[currentFaceId.value]];
-        newGrids[currentFaceId.value][gridPos.y] = [...newGrids[currentFaceId.value][gridPos.y]];
-        if (!newGrids[currentFaceId.value][gridPos.y][gridPos.x]) {
-          newGrids[currentFaceId.value][gridPos.y][gridPos.x] = true;
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }
-        return newGrids;
-      });
+      // On crée une copie complète de la grille actuelle
+      const currentGrid = [grid0, grid1, grid2, grid3][currentFaceId.value];
+      const newGrid = currentGrid.map(row => [...row]);
+      newGrid[gridPos.y][gridPos.x] = true;
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      // On met à jour uniquement la grille de la face actuelle
+      switch(currentFaceId.value) {
+        case 0: setGrid0(newGrid); break;
+        case 1: setGrid1(newGrid); break;
+        case 2: setGrid2(newGrid); break;
+        case 3: setGrid3(newGrid); break;
+      }
     }
-  }, [getGridPosition, isInGrid, currentFaceId.value]);
+  }, [getGridPosition, isInGrid, currentFaceId.value, grid0, grid1, grid2, grid3]);
 
-  const getCleanedPercentage = useCallback(() => {
+  const getCleanedPercentage = useCallback((faceId: number) => {
+    const currentGrid = [grid0, grid1, grid2, grid3][faceId];
     let cleaned = 0;
     for (let i = 0; i < GRID_SIZE; i++) {
       for (let j = 0; j < GRID_SIZE; j++) {
-        if (grids[currentFaceId.value][i][j]) cleaned++;
+        if (currentGrid[i][j]) cleaned++;
       }
     }
     return cleaned / (GRID_SIZE * GRID_SIZE);
-  }, [grids, currentFaceId.value]);
+  }, [grid0, grid1, grid2, grid3]);
+
+  const areAllFacesCleaned = useCallback(() => {
+    return [grid0, grid1, grid2, grid3].every((grid, faceId) => {
+      return getCleanedPercentage(faceId) >= CLEAN_THRESHOLD;
+    });
+  }, [grid0, grid1, grid2, grid3, getCleanedPercentage]);
 
   useEffect(() => {
-    if (getCleanedPercentage() >= CLEAN_THRESHOLD && !isCleaned) {
+    if (areAllFacesCleaned() && !isCleaned) {
       setTimeout(() => {
         setIsCleaned(true);
         props.onDone();      
       }, 1000);
     }
-  }, [grids, isCleaned, props, getCleanedPercentage]);
+  }, [grid0, grid1, grid2, grid3, isCleaned, props, areAllFacesCleaned]);
 
   const showArrows = useCallback((show: boolean) => {
     riveRef.current?.setInputStateAtPath("showArrows", show, "Object");
@@ -268,31 +344,13 @@ export default function Clean(props: CleanProps) {
     }
   }, []);
 
-  const isPointOnRag = useCallback((x: number, y: number) => {
+  // Fonction pour ajouter un point au chemin de nettoyage
+  const addPointToCleanPath = useCallback((x: number, y: number) => {
     'worklet';
-    const margin = 20; // Zone de tolérance de 20 pixels
-    const ragBounds = {
-      left: translateX.value - margin,
-      right: translateX.value + RAG_WIDTH + margin,
-      top: translateY.value - margin,
-      bottom: translateY.value + (RAG_WIDTH/ragRatio) + margin
-    };
-    return x >= ragBounds.left && x <= ragBounds.right && y >= ragBounds.top && y <= ragBounds.bottom;
-  }, []);
-
-  const getDirection = useCallback((dx: number, dy: number) => {
-    'worklet';
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    // On ne déclenche le changement que si le mouvement est suffisant (50 pixels)
-    if (distance < 50) return 0;
-    
-    // On ne regarde que le mouvement horizontal
-    if (Math.abs(dx) > Math.abs(dy)) {
-      if (dx > 0) return 1; // droite
-      if (dx < 0) return 3; // gauche
-    }
-    return 0;
-  }, []);
+    const currentPath = getCurrentCleanPath();
+    const relativePos = getRelativePosition(x, y);
+    currentPath.value.lineTo(relativePos.x, relativePos.y);
+  }, [getCurrentCleanPath, getRelativePosition]);
 
   const gesture = Gesture.Manual()
     .onTouchesDown((e, manager) => {
@@ -318,7 +376,11 @@ export default function Clean(props: CleanProps) {
         startY.value = translateY.value;
         const centerX = translateX.value + RAG_WIDTH/2;
         const centerY = translateY.value + RAG_WIDTH/2;
-        cleanPath.value.moveTo(centerX, centerY);
+        // On utilise le chemin de nettoyage spécifique à la face actuelle
+        const currentPath = [cleanPath0, cleanPath1, cleanPath2, cleanPath3][currentFaceId.value];
+        const relativePos = getRelativePosition(centerX, centerY);
+        currentPath.value.moveTo(relativePos.x, relativePos.y);
+        isRagHeldValue.value = true;
         runOnJS(setIsRagHeld)(true);
         runOnJS(updateGridAtPosition)(centerX, centerY);
       }
@@ -336,7 +398,7 @@ export default function Clean(props: CleanProps) {
           currentDirection.value = direction;
           runOnJS(riveRef.current?.setInputStateAtPath)("direction", direction, "Object");
         }
-      } else if (isRagHeld) {
+      } else if (isRagHeldValue.value) {
         const touch = e.changedTouches[0];
         translateX.value = startX.value + touch.x - touchStartX.value;
         translateY.value = startY.value + touch.y - touchStartY.value;
@@ -344,7 +406,10 @@ export default function Clean(props: CleanProps) {
         const centerX = translateX.value + RAG_WIDTH/2;
         const centerY = translateY.value + RAG_WIDTH/2;
         
-        cleanPath.value.lineTo(centerX, centerY);
+        // On utilise le chemin de nettoyage spécifique à la face actuelle
+        const currentPath = [cleanPath0, cleanPath1, cleanPath2, cleanPath3][currentFaceId.value];
+        const relativePos = getRelativePosition(centerX, centerY);
+        currentPath.value.lineTo(relativePos.x, relativePos.y);
         runOnJS(updateGridAtPosition)(centerX, centerY);
 
         const targetRotation = getRotationAngle(centerX, centerY);
@@ -363,7 +428,8 @@ export default function Clean(props: CleanProps) {
           runOnJS(updateFaceId)(currentDirection.value);
         }
       }
-      if (isRagHeld) {
+      if (isRagHeldValue.value) {
+        isRagHeldValue.value = false;
         runOnJS(setIsRagHeld)(false);
       }
       isMenuMode.value = false;
@@ -432,7 +498,9 @@ export default function Clean(props: CleanProps) {
     const cellSize = STAIN_SIZE / GRID_SIZE;
     const startX = imagePositions[currentFaceIdState].x;
     const startY = imagePositions[currentFaceIdState].y;
-    const cells = [];
+    const cells: JSX.Element[] = [];
+
+    const currentGrid = [grid0, grid1, grid2, grid3][currentFaceId.value];
 
     for (let i = 0; i < GRID_SIZE; i++) {
       for (let j = 0; j < GRID_SIZE; j++) {
@@ -445,14 +513,14 @@ export default function Clean(props: CleanProps) {
             y={y}
             width={cellSize}
             height={cellSize}
-            paint={grids[currentFaceId.value][j][i] ? debugCleanedStyle : debugGridStyle}
+            paint={currentGrid[j][i] ? debugCleanedStyle : debugGridStyle}
           />
         );
       }
     }
 
     return <Group>{cells}</Group>;
-  }, [debug, grids, currentFaceId.value, debugGridStyle, debugCleanedStyle, imagePositions]);
+  }, [debug, currentFaceId.value, debugGridStyle, debugCleanedStyle, imagePositions, grid0, grid1, grid2, grid3]);
 
   const styles = useMemo(() => StyleSheet.create({
     container: {
@@ -492,10 +560,18 @@ export default function Clean(props: CleanProps) {
                   height={STAIN_SIZE}
                 />
               )}
-              <Path
-                path={cleanPath}
-                paint={paint}
-              />
+              <Group transform={[{ translateX: getStainPosition(0).x }, { translateY: getStainPosition(0).y }]}>
+                <Path path={cleanPath0} paint={paint} />
+              </Group>
+              <Group transform={[{ translateX: getStainPosition(1).x }, { translateY: getStainPosition(1).y }]}>
+                <Path path={cleanPath1} paint={paint} />
+              </Group>
+              <Group transform={[{ translateX: getStainPosition(2).x }, { translateY: getStainPosition(2).y }]}>
+                <Path path={cleanPath2} paint={paint} />
+              </Group>
+              <Group transform={[{ translateX: getStainPosition(3).x }, { translateY: getStainPosition(3).y }]}>
+                <Path path={cleanPath3} paint={paint} />
+              </Group>
               {renderDebugGrid()}
             </Canvas>
             <Animated.Image
