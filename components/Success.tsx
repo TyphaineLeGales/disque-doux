@@ -19,15 +19,15 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
   }, [onAnimationComplete]);
 
   return (
-    <View className="absolute top-0 left-0 right-0 bottom-0">
+    <View className="absolute bottom-0 left-0 right-0 top-0">
       <Rive
         ref={riveComponentRef}
         resourceName="success"
         fit={Fit.Cover}
-        autoplay={true}
+        autoplay
         animationName="Success"
         style={{ width: '100%', height: '100%' }}
       />
     </View>
   );
-} 
+}

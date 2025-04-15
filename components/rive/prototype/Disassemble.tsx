@@ -55,6 +55,7 @@ export default function Disassemble(props: AssembleProps) {
   };
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     if (event.name === 'toolDropped') {
+      riveRef.current.fireStateAtPath('closeToolbox', 'BtnTools');
       riveRef.current.setInputState('main', 'showCloseUp', true);
       setInCloseUp(true);
     }
@@ -67,7 +68,7 @@ export default function Disassemble(props: AssembleProps) {
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="disassemble_5"
+        resourceName="disassemble_9"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
