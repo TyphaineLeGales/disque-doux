@@ -33,8 +33,7 @@ export default function Assemble(props: AssembleProps) {
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
         style={{
-          width: '100%',
-          height: '100%',
+          height: '75%',
         }}
       />
       <View className="flex w-full flex-row items-center justify-center">

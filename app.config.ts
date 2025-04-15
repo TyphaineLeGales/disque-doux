@@ -47,6 +47,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         assetsPaths: ['./rive'],
       },
     ],
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          newArchEnabled: false, // 👈 disable Fabric & TurboModules
+        },
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
@@ -75,6 +83,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     package: getIdentifier(),
   },
+
   extra: {
     router: {
       origin: false,

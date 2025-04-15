@@ -1,20 +1,25 @@
 import { useLocalSearchParams } from 'expo-router';
-import * as React from 'react';
-import { Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import Assemble from '@/components/Assemble';
-import Screw from '@/components/Screw';
-import Tools from '@/components/Tools';
-import Clean from '@/components/Clean';
 import Success from '@/components/Success';
+import Assemble from '@/components/rive/prototype/Assemble';
+import Clean from '@/components/rive/prototype/Clean';
+import Disassemble from '@/components/rive/prototype/Disassemble';
+import Tools from '@/components/rive/prototype/Tools';
+import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const PHASES = ['tools', 'disassemble', 'reassemble', 'clean'];
-  const [currPhaseIndex, setCurrPhaseIndex] = React.useState(0);
+  const { phaseIndex } = useLevelStore();
+  const PHASES = ['tools', 'clean', 'disassemble', 'reassemble'];
+  const [currPhaseIndex, setCurrPhaseIndex] = React.useState(phaseIndex || 0);
   const [showSuccess, setShowSuccess] = React.useState(false);
+
+  useEffect(() => {
+    setCurrPhaseIndex(phaseIndex);
+  }, [phaseIndex]);
 
   const onPhaseDone = () => {
     setShowSuccess(true);
@@ -26,17 +31,17 @@ export default function Sequence() {
   };
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView className="flex-1 items-center justify-center bg-[#FFE8E0]">
+    <GestureHandlerRootView className="size-full">
+      <View className="size-full bg-[#FFE8E0]">
         <Text>
-          Level : {id}, Phase: {PHASES[currPhaseIndex]}
+          Level : {id}, Phase: {currPhaseIndex} {PHASES[currPhaseIndex]}
         </Text>
-        {/* {currPhaseIndex === 0 && <Tools onDone={onPhaseDone} id={id} />}
-        {currPhaseIndex === 1 && <Screw onDone={onPhaseDone} id={id} />}
-        {currPhaseIndex === 2 && <Assemble onDone={onPhaseDone} id={id} />} */}
-        {currPhaseIndex === 0 && <Clean onDone={onPhaseDone} id={id} />}
+        {currPhaseIndex === 0 && <Tools onDone={onPhaseDone} id={id} />}
+        {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} />}
+        {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} />}
+        {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} />}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
