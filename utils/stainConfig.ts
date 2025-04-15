@@ -9,30 +9,30 @@ export interface StainConfig {
 }
 
 export const stainConfig: StainConfig = {
-  defaultFaceId: 0, // Face A par défaut (index 0)
+  defaultFaceId: 0,
   stains: [
     {
       position: {
-        x: 87,   // centré horizontalement
-        y: -17    // centré verticalement
+        x: -23,  
+        y: 107
       }
     },
     {
       position: {
-        x: -50, // 50px à gauche du centre
-        y: 50   // 50px en dessous du centre
+        x: -65,
+        y: 96
       }
     },
     {
       position: {
-        x: 50,  // 50px à droite du centre
-        y: -50  // 50px au dessus du centre
+        x: 87,
+        y: -17
       }
     },
     {
       position: {
-        x: -30, // 30px à gauche du centre
-        y: 70   // 70px en dessous du centre
+        x: -50,
+        y: -50
       }
     }
   ]

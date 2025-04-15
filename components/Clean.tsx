@@ -185,23 +185,17 @@ export default function Clean(props: CleanProps) {
       const centerY = (height - insets.top - insets.bottom) / 2;
       
       // On calcule les positions pour toutes les taches
-      return stainConfig.stains.map((stain, index) => {
-        // On calcule l'index relatif par rapport au defaultFaceId
-        const relativeIndex = (index - stainConfig.defaultFaceId + stainConfig.stains.length) % stainConfig.stains.length;
-        return {
-          x: centerX + stain.position.x - STAIN_SIZE / 2,
-          y: centerY + stain.position.y - STAIN_SIZE / 2,
-          relativeIndex
-        };
-      });
+      return stainConfig.stains.map(stain => ({
+        x: centerX + stain.position.x - STAIN_SIZE / 2,
+        y: centerY + stain.position.y - STAIN_SIZE / 2
+      }));
     },
     [width, height, insets.top, insets.bottom]
   );
 
   const getStainPosition = useCallback((faceId: number) => {
-    // On trouve la position correspondant à la face actuelle
-    const position = imagePositions.find(pos => pos.relativeIndex === faceId);
-    return position || imagePositions[0];
+    // On utilise directement l'index de la face
+    return imagePositions[faceId];
   }, [imagePositions]);
 
   const isInStain = useCallback((x: number, y: number) => {
