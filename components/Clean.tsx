@@ -14,14 +14,14 @@ import {
 } from '@shopify/react-native-skia';
 import * as Haptics from 'expo-haptics';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { Dimensions, StyleSheet, View, Image as RNImage } from 'react-native';
+import { Dimensions, StyleSheet, View, Image as RNImage, Text } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { 
   useAnimatedStyle,
   useSharedValue,
   runOnJS,
-  withTiming
+  withTiming,
 } from 'react-native-reanimated';
 import Rive, { Fit, RiveRef } from 'rive-react-native';
 import { StainPosition } from '../utils/StainPosition';
@@ -45,6 +45,7 @@ export default function Clean(props: CleanProps) {
   const [isCleaned, setIsCleaned] = useState(false);
   const [isRagHeld, setIsRagHeld] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [showGreat, setShowGreat] = useState(false);
   const [ragRatio, setRagRatio] = useState(1);
   const [grid0, setGrid0] = useState<boolean[][]>(() => 
     Array(GRID_SIZE).fill(false).map(() => Array(GRID_SIZE).fill(false))
@@ -530,6 +531,44 @@ export default function Clean(props: CleanProps) {
     return <Group>{cells}</Group>;
   }, [debug, currentFaceId.value, debugGridStyle, debugCleanedStyle, imagePositions, grid0, grid1, grid2, grid3]);
 
+  // Style pour le texte "Great!"
+  const greatTextStyle = useMemo(() => {
+    const paint = Skia.Paint();
+    paint.setColor(Skia.Color('rgba(0, 255, 0, 0.8)'));
+    return paint;
+  }, []);
+
+  // Fonction pour vérifier si une face est nettoyée
+  const isFaceCleaned = useCallback((faceId: number) => {
+    const currentGrid = [grid0, grid1, grid2, grid3][faceId];
+    let cleaned = 0;
+    for (let i = 0; i < GRID_SIZE; i++) {
+      for (let j = 0; j < GRID_SIZE; j++) {
+        if (currentGrid[i][j]) cleaned++;
+      }
+    }
+    return cleaned / (GRID_SIZE * GRID_SIZE) >= CLEAN_THRESHOLD;
+  }, [grid0, grid1, grid2, grid3]);
+
+  // Effet pour gérer l'affichage et la disparition du texte "Great!"
+  useEffect(() => {
+    const isCurrent = isFaceCleaned(currentFaceIdState);
+    if (isCurrent) {
+      setShowGreat(true);
+      const timer = setTimeout(() => {
+        setShowGreat(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowGreat(false);
+    }
+  }, [currentFaceIdState, isFaceCleaned]);
+
+  // Effet pour réinitialiser showGreat quand on change de face
+  useEffect(() => {
+    setShowGreat(false);
+  }, [currentFaceIdState]);
+
   const styles = useMemo(() => StyleSheet.create({
     container: {
       position: 'absolute',
@@ -543,8 +582,18 @@ export default function Clean(props: CleanProps) {
       aspectRatio: ragRatio,
       position: 'absolute',
       resizeMode: 'contain',
+    },
+    greatText: {
+      position: 'absolute',
+      width: '100%',
+      textAlign: 'center',
+      top: height / 6,
+      fontSize: 50,
+      color: 'rgba(0, 255, 0, 0.8)',
+      fontWeight: 'bold',
+      zIndex: 1000,
     }
-  }), [ragRatio]);
+  }), [ragRatio, height]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -559,7 +608,7 @@ export default function Clean(props: CleanProps) {
               style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
             />
             <Canvas style={canvasStyle}>
-              {loadedImages[currentFaceIdState] && (
+              {loadedImages[currentFaceIdState] && !isFaceCleaned(currentFaceIdState) && (
                 <Image
                   image={stainImages[currentFaceIdState]}
                   x={getStainPosition(currentFaceIdState).x}
@@ -594,6 +643,10 @@ export default function Clean(props: CleanProps) {
               )}
               {renderDebugGrid()}
             </Canvas>
+            {/* Texte "Great!" pour chaque face */}
+            {showGreat && (
+              <Text style={styles.greatText}>Great!</Text>
+            )}
             <Animated.Image
               source={require('../assets/rag.png')}
               style={[
