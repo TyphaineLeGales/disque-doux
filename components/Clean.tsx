@@ -9,6 +9,8 @@ import {
   Rect,
   Group,
   PaintStyle,
+  StrokeCap,
+  StrokeJoin,
 } from '@shopify/react-native-skia';
 import * as Haptics from 'expo-haptics';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
@@ -34,12 +36,12 @@ type CleanProps = {
 const { width, height } = Dimensions.get('window');
 const RAG_WIDTH = 70;
 const BRUSH_SIZE = 50;
-const CLEAN_THRESHOLD = 0.5;
-const GRID_SIZE = 7;
+const CLEAN_THRESHOLD = 0.8;
+const GRID_SIZE = 3;
 const STAIN_SIZE = 130;
 
 export default function Clean(props: CleanProps) {
-  const { debug = true} = props;
+  const { debug = false } = props;
   const [isCleaned, setIsCleaned] = useState(false);
   const [isRagHeld, setIsRagHeld] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -329,10 +331,13 @@ export default function Clean(props: CleanProps) {
 
   useEffect(() => {
     if (areAllFacesCleaned() && !isCleaned) {
-      setTimeout(() => {
+      // On attend un peu avant d'appeler onDone pour s'assurer que tout est propre
+      const timer = setTimeout(() => {
         setIsCleaned(true);
-        props.onDone();      
-      }, 1000);
+        props.onDone();
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [grid0, grid1, grid2, grid3, isCleaned, props, areAllFacesCleaned]);
 
@@ -443,6 +448,9 @@ export default function Clean(props: CleanProps) {
     p.setBlendMode(BlendMode.Clear);
     p.setStrokeWidth(BRUSH_SIZE);
     p.setStyle(PaintStyle.Stroke);
+    p.setStrokeCap(StrokeCap.Round);
+    p.setStrokeJoin(StrokeJoin.Round);
+    p.setColor(Skia.Color('transparent'));
     return p;
   }, []);
 
@@ -560,18 +568,30 @@ export default function Clean(props: CleanProps) {
                   height={STAIN_SIZE}
                 />
               )}
-              <Group transform={[{ translateX: getStainPosition(0).x }, { translateY: getStainPosition(0).y }]}>
-                <Path path={cleanPath0} paint={paint} />
-              </Group>
-              <Group transform={[{ translateX: getStainPosition(1).x }, { translateY: getStainPosition(1).y }]}>
-                <Path path={cleanPath1} paint={paint} />
-              </Group>
-              <Group transform={[{ translateX: getStainPosition(2).x }, { translateY: getStainPosition(2).y }]}>
-                <Path path={cleanPath2} paint={paint} />
-              </Group>
-              <Group transform={[{ translateX: getStainPosition(3).x }, { translateY: getStainPosition(3).y }]}>
-                <Path path={cleanPath3} paint={paint} />
-              </Group>
+              {/* Chemin de nettoyage pour la face 0 */}
+              {currentFaceIdState === 0 && (
+                <Group transform={[{ translateX: getStainPosition(0).x }, { translateY: getStainPosition(0).y }]}>
+                  <Path path={cleanPath0} paint={paint} />
+                </Group>
+              )}
+              {/* Chemin de nettoyage pour la face 1 */}
+              {currentFaceIdState === 1 && (
+                <Group transform={[{ translateX: getStainPosition(1).x }, { translateY: getStainPosition(1).y }]}>
+                  <Path path={cleanPath1} paint={paint} />
+                </Group>
+              )}
+              {/* Chemin de nettoyage pour la face 2 */}
+              {currentFaceIdState === 2 && (
+                <Group transform={[{ translateX: getStainPosition(2).x }, { translateY: getStainPosition(2).y }]}>
+                  <Path path={cleanPath2} paint={paint} />
+                </Group>
+              )}
+              {/* Chemin de nettoyage pour la face 3 */}
+              {currentFaceIdState === 3 && (
+                <Group transform={[{ translateX: getStainPosition(3).x }, { translateY: getStainPosition(3).y }]}>
+                  <Path path={cleanPath3} paint={paint} />
+                </Group>
+              )}
               {renderDebugGrid()}
             </Canvas>
             <Animated.Image
