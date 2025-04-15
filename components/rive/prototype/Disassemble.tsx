@@ -32,14 +32,12 @@ export default function Disassemble(props: AssembleProps) {
   const updateRiveState = (num: number) => {
     if (isDone.current) return;
     if (num < THRESHOLD) {
-      console.log(num, 'num');
-      console.log('progressScrewPos', num / 10);
-      console.log('progressScrewRotate', num % 100);
       riveRef.current?.setInputStateAtPath('progressScrewPos', num / 10, 'closeUp'); // modulo 100 === 1 turn -> we need to do several turns,
       riveRef.current?.setInputStateAtPath('progressScrewRotate', num % 100, 'closeUp');
     } else {
       isDone.current = true;
-      //setTimeout(props.onDone, 2000);
+      riveRef.current.setInputState('main', 'showCloseUp', false);
+      setTimeout(() => riveRef.current?.fireState('main', 'onNext'), 1000);
     }
   };
 
@@ -57,16 +55,19 @@ export default function Disassemble(props: AssembleProps) {
   };
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     if (event.name === 'toolDropped') {
-      console.log('tool dropped');
       riveRef.current.setInputState('main', 'showCloseUp', true);
       setInCloseUp(true);
+    }
+
+    if (event.name === 'levelIsDone') {
+      props.onDone();
     }
   };
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="disassemble_4"
+        resourceName="disassemble_5"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
