@@ -19,7 +19,7 @@ export default function Tools(props: ToolsProps) {
   return (
     <Rive
       ref={riveRef}
-      resourceName="tools_choose"
+      resourceName="tools_3"
       artboardName="tools"
       stateMachineName="Choose Tools"
       onStateChanged={handleStateChange}
