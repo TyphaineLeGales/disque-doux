@@ -558,7 +558,7 @@ export default function Clean(props: CleanProps) {
           <View style={StyleSheet.absoluteFill}>
             <Rive
               ref={riveRef}
-              resourceName="clean_1"
+              resourceName="clean_2"
               fit={Fit.Cover}
               artboardName="Clean"
               style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
