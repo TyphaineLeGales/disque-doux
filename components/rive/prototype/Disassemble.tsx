@@ -52,6 +52,13 @@ export default function Disassemble(props: AssembleProps) {
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log(stateName);
+    if (stateName === 'ActiveTest') {
+      riveRef.current.fireStateAtPath('openToolbox', 'BtnTools');
+    }
+
+    if (stateName === 'IdleTest') {
+      riveRef.current.fireStateAtPath('closeToolbox', 'BtnTools');
+    }
   };
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     if (event.name === 'toolDropped') {
@@ -64,11 +71,12 @@ export default function Disassemble(props: AssembleProps) {
       props.onDone();
     }
   };
+
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="disassemble_9"
+        resourceName="disassemble11"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}

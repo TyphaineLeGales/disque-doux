@@ -6,7 +6,7 @@ import { DebugPanel } from '@/components/DebugPanel';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SafeAreaView className="flex size-full items-center justify-center bg-slate-800">
+    <SafeAreaView className="flex size-full flex-1 items-center justify-center bg-white">
       <DebugPanel />
       <Slot />
     </SafeAreaView>

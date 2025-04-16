@@ -36,11 +36,11 @@ export const DebugPanel = () => {
 
   return (
     <View style={styles.panel}>
-      <Button title="Toggle" onPress={toggleDebug} color="white" />
+      <Button title="Toggle" onPress={toggleDebug} />
       {show && (
         <View>
-          <View className="flex flex-row">
-            <Button title="Go to phase" onPress={updatePhase} color="white" />
+          <View className="my-2 flex flex-row">
+            <Button title="Go to phase" onPress={updatePhase} />
             <TextInput
               style={styles.input}
               keyboardType="numeric"
@@ -48,7 +48,7 @@ export const DebugPanel = () => {
               onChangeText={handleChange}
             />
           </View>
-          <Button title="Jump to Level" onPress={goToLevel} color="white" />
+          <Button title="Jump to Level" onPress={goToLevel} />
         </View>
       )}
     </View>

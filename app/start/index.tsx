@@ -34,9 +34,6 @@ export default function StartScreen() {
         }}
         onStateChanged={handleStateChange}
       />
-      <View className="flex w-full flex-row items-center justify-center">
-        <Button title="start" onPress={onStart} />
-      </View>
     </View>
   );
 }

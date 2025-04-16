@@ -8,6 +8,7 @@ import Assemble from '@/components/rive/prototype/Assemble';
 import Clean from '@/components/rive/prototype/Clean';
 import Disassemble from '@/components/rive/prototype/Disassemble';
 import Tools from '@/components/rive/prototype/Tools';
+import BtnTools from '@/components/rive/tests/BtnTools';
 import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
@@ -31,8 +32,8 @@ export default function Sequence() {
   };
 
   return (
-    <GestureHandlerRootView className="size-full">
-      <View className="size-full bg-[#FFE8E0]">
+    <GestureHandlerRootView className="flex size-full flex-1 ">
+      <View className="flex size-full w-[100vw] flex-1 ">
         <Text>
           Level : {id}, Phase: {currPhaseIndex} {PHASES[currPhaseIndex]}
         </Text>
@@ -41,6 +42,7 @@ export default function Sequence() {
         {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} />}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
+        {/* <BtnTools /> */}
       </View>
     </GestureHandlerRootView>
   );

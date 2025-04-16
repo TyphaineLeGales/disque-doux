@@ -48,7 +48,7 @@ export default function AssembleProto(props: AssembleProps) {
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="assemble_V3_30"
+        resourceName="assemble_v3"
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
