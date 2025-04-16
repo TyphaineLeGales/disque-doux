@@ -71,13 +71,6 @@ export default function Clean(props: CleanProps) {
   const currentFaceId = useSharedValue(stainConfig.defaultFaceId);
   const isRagHeldValue = useSharedValue(false);
 
-  // Fonction pour obtenir l'index de la face suivante
-  const getNextFaceIndex = useCallback((currentIndex: number, direction: number) => {
-    if (direction === 0) return currentIndex;
-    const nextIndex = (currentIndex + (direction === 1 ? 1 : -1) + 4) % 4;
-    return nextIndex;
-  }, []);
-
   const cleanPath0 = useSharedValue<SkPath>(Skia.Path.Make());
   const cleanPath1 = useSharedValue<SkPath>(Skia.Path.Make());
   const cleanPath2 = useSharedValue<SkPath>(Skia.Path.Make());
@@ -129,9 +122,7 @@ export default function Clean(props: CleanProps) {
     currentFaceId.value = newFaceId;
     setCurrentFaceIdState(newFaceId);
     
-    // Mise à jour de la face et du solo dans Rive
     riveRef.current?.setInputStateAtPath("FaceId", newFaceId, "Object");
-    riveRef.current?.setInputStateAtPath("solo", newFaceId, "Object");
   }, [currentFaceId.value]);
 
   // Effet pour synchroniser l'état initial
@@ -139,8 +130,6 @@ export default function Clean(props: CleanProps) {
     currentFaceId.value = stainConfig.defaultFaceId;
     setCurrentFaceIdState(stainConfig.defaultFaceId);
     riveRef.current?.setInputStateAtPath("FaceId", stainConfig.defaultFaceId, "Object");
-    // Le solo commence à defaultFaceId
-    riveRef.current?.setInputStateAtPath("solo", stainConfig.defaultFaceId, "Object");
   }, [stainConfig.defaultFaceId]);
 
   const stainImage0 = useImage(require('../../../assets/images/stains/0.png'), () => {
@@ -278,22 +267,6 @@ export default function Clean(props: CleanProps) {
     return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
   }, []);
 
-  const getCurrentStainId = useCallback((x: number, y: number) => {
-    const currentPosition = getStainPosition(currentFaceIdState);
-    for (let stainId = 0; stainId < stainConfig.stains.length; stainId++) {
-      const stain = stainConfig.stains[stainId];
-      const stainX = currentPosition.x + stain.position.x;
-      const stainY = currentPosition.y + stain.position.y;
-      if (
-        x >= stainX && x <= stainX + STAIN_SIZE &&
-        y >= stainY && y <= stainY + STAIN_SIZE
-      ) {
-        return stainId;
-      }
-    }
-    return -1;
-  }, [getStainPosition, currentFaceIdState]);
-
   const updateGridAtPosition = useCallback((x: number, y: number) => {
     const gridPos = getGridPosition(x, y);
     if (isInGrid(gridPos.x, gridPos.y)) {
@@ -348,14 +321,6 @@ export default function Clean(props: CleanProps) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
   }, []);
-
-  // Fonction pour ajouter un point au chemin de nettoyage
-  const addPointToCleanPath = useCallback((x: number, y: number) => {
-    'worklet';
-    const currentPath = getCurrentCleanPath();
-    const relativePos = getRelativePosition(x, y);
-    currentPath.value.lineTo(relativePos.x, relativePos.y);
-  }, [getCurrentCleanPath, getRelativePosition]);
 
   const gesture = Gesture.Manual()
     .onTouchesDown((e, manager) => {
@@ -492,7 +457,6 @@ export default function Clean(props: CleanProps) {
     const timer = setTimeout(() => {
       if (riveRef.current) {
         riveRef.current?.setInputStateAtPath("FaceId", stainConfig.defaultFaceId, "Object");
-        riveRef.current?.setInputStateAtPath("solo", stainConfig.defaultFaceId, "Object");
         riveRef.current?.setInputStateAtPath("showArrows", false, "Object");
       }
     }, 100);
@@ -529,13 +493,6 @@ export default function Clean(props: CleanProps) {
 
     return <Group>{cells}</Group>;
   }, [debug, currentFaceId.value, debugGridStyle, debugCleanedStyle, imagePositions, grid0, grid1, grid2, grid3]);
-
-  // Style pour le texte "Great!"
-  const greatTextStyle = useMemo(() => {
-    const paint = Skia.Paint();
-    paint.setColor(Skia.Color('rgba(0, 255, 0, 0.8)'));
-    return paint;
-  }, []);
 
   // Fonction pour vérifier si une face est nettoyée
   const isFaceCleaned = useCallback((faceId: number) => {
@@ -601,7 +558,7 @@ export default function Clean(props: CleanProps) {
           <View style={StyleSheet.absoluteFill}>
             <Rive
               ref={riveRef}
-              resourceName="clean"
+              resourceName="clean_1"
               fit={Fit.Cover}
               artboardName="Clean"
               style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
