@@ -22,21 +22,16 @@ export default function StartScreen() {
   };
 
   return (
-    <View className="size-full flex-1">
+    <View className="size-full">
       <Rive
         ref={riveComponentRef}
         resourceName="start"
         fit={Fit.Contain}
-        className="flex w-full flex-row items-center justify-center"
-        style={{
-          width: '100%',
-          height: '90%',
-        }}
         onStateChanged={handleStateChange}
       />
-      <View className="flex w-full flex-row items-center justify-center">
-        <Button title="start" onPress={onStart} />
-      </View>
+        {/* <View className="flex w-full flex-row items-center justify-center">
+          <Button title="start" onPress={onStart} />
+        </View> */}
     </View>
   );
 }

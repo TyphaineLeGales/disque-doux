@@ -16,7 +16,7 @@ export default function Sequence() {
 
   return (
     <View className="size-full bg-[#FFE8E0]">
-      <Text className="text-xl font-bold">séquence de narration : {id}</Text>
+      {/* <Text className="text-xl font-bold">séquence de narration : {id}</Text> */}
       <Rive
         ref={riveComponentRef}
         resourceName="narration_1_2" // use id to get proper rive file
@@ -27,9 +27,9 @@ export default function Sequence() {
         }}
         onStateChanged={handleStateChange}
       />
-      <View className="flex w-full flex-row items-center justify-center">
+      {/* <View className="flex w-full flex-row items-center justify-center">
         <Button title="find tools" onPress={onNext} />
-      </View>
+      </View> */}
     </View>
   );
 }

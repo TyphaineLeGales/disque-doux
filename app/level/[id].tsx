@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Success from '@/components/Success';
 import Assemble from '@/components/rive/prototype/Assemble';
-import Clean from '@/components/rive/prototype/Clean';
+import Clean from '@/components/rive/final/Clean';
 import Disassemble from '@/components/rive/prototype/Disassemble';
 import Tools from '@/components/rive/prototype/Tools';
 import { useLevelStore } from '@/stores/levelStore';
@@ -33,9 +33,9 @@ export default function Sequence() {
   return (
     <GestureHandlerRootView className="size-full">
       <View className="size-full bg-[#FFE8E0]">
-        <Text>
+        {/* <Text>
           Level : {id}, Phase: {currPhaseIndex} {PHASES[currPhaseIndex]}
-        </Text>
+        </Text> */}
         {currPhaseIndex === 0 && <Tools onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} />}
