@@ -2,7 +2,7 @@ import { Slot } from 'expo-router';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { DebugPanel } from '@/components/DebugPanel';
+import { DebugPanel } from '@/components/ui/DebugPanel';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

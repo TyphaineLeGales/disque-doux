@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Button } from 'react-native';
 
-import { useLevelStore } from '../stores/levelStore';
+import { useLevelStore } from '@/stores/levelStore';
 
 export const DebugPanel = () => {
   const { setPhaseIndex, debugMode, level } = useLevelStore();

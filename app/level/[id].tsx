@@ -1,24 +1,23 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Success from '@/components/Success';
-import Clean from '@/components/rive/final/Clean';
-import Assemble from '@/components/rive/prototype/Assemble';
-import Disassemble from '@/components/rive/prototype/Disassemble';
-import Tools from '@/components/rive/prototype/Tools';
-import AssembleAnimation from '@/components/rive/tests/AssembleAnimation';
-import BtnTools from '@/components/rive/tests/BtnTools';
-import InstancedPieces from '@/components/rive/tests/InstancedPieces';
+import FindTools from '@/components/final/1_FindTools';
+import Clean from '@/components/final/2_Clean';
+import Disassemble from '@/components/final/3_Disassemble';
+import Assemble from '@/components/final/4_Assemble';
+import GameTuto from '@/components/final/GameplayTuto';
 import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { phaseIndex } = useLevelStore();
-  const PHASES = ['tools', 'clean', 'disassemble', 'reassemble'];
-  const [currPhaseIndex, setCurrPhaseIndex] = React.useState(phaseIndex || 0);
-  const [showSuccess, setShowSuccess] = React.useState(false);
+  const PHASES = ['FindTools', 'Clean', 'Disassemble', 'Assemble'];
+  const [currPhaseIndex, setCurrPhaseIndex] = useState(phaseIndex || 0);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showTuto, setShowTuto] = useState(false);
 
   useEffect(() => {
     setCurrPhaseIndex(phaseIndex);
@@ -28,9 +27,14 @@ export default function Sequence() {
     setShowSuccess(true);
   };
 
+  const onTutoDone = () => {
+    setCurrPhaseIndex((prev) => prev + 1);
+  };
+
   const handleSuccessComplete = () => {
     setShowSuccess(false);
-    setCurrPhaseIndex((prev) => prev + 1);
+    setShowTuto(true);
+    // TODO : show tutorial of next level
   };
 
   return (
@@ -39,13 +43,12 @@ export default function Sequence() {
         <Text>
           Level : {id}, Phase: {currPhaseIndex} {PHASES[currPhaseIndex]}
         </Text>
-        {currPhaseIndex === 0 && <Tools onDone={onPhaseDone} id={id} />}
+        {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} />}
         {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} />}
-        {currPhaseIndex === 4 && <AssembleAnimation onDone={onPhaseDone} id={id} />}
-        {currPhaseIndex === 5 && <InstancedPieces />}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
+        {showTuto && <GameTuto id={id} onDone={onTutoDone} />}
         {/* <BtnTools /> */}
       </View>
     </GestureHandlerRootView>
