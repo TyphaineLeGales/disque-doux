@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Success from '@/components/Success';
+import Clean from '@/components/rive/final/Clean';
 import Assemble from '@/components/rive/prototype/Assemble';
-import Clean from '@/components/rive/prototype/Clean';
 import Disassemble from '@/components/rive/prototype/Disassemble';
 import Tools from '@/components/rive/prototype/Tools';
 import AssembleAnimation from '@/components/rive/tests/AssembleAnimation';
