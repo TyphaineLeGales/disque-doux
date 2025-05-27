@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
+import Rive, { Fit, RiveRef } from 'rive-react-native';
 
 type ToolsProps = {
   onDone: Function;
