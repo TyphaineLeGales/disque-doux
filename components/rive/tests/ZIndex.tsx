@@ -1,48 +1,54 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
-import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
+import { Text, View, Pressable } from 'react-native';
+import Rive, {
+  Fit,
+  RiveRef,
+  BindByName,
+  RNRiveError,
+  RNRiveErrorType,
+  AutoBind,
+} from 'rive-react-native';
 
 export default function ZIndex() {
   const riveRef = useRef<RiveRef>(null);
-  const [hide, setHide] = useState(false);
+  const currPieceIndex = useRef(1);
 
-  useEffect(() => {
-    console.log('hide', hide);
-  }, [hide]);
-
-  // apply pointer-event-none once object is in the inventory
-  const handleStateChange = (stateMachineName: string, stateName: string) => {
-    console.log('State changed:', { stateMachineName, stateName });
-    if (stateName === 'inInventory') {
-      setHide(true);
-    }
+  const handleStateChange = (stateMachineName: string, stateName: string) => {};
+  const onBtnPress = () => {
+    riveRef.current?.setInputStateAtPath('isDraggable', true, `piece ${currPieceIndex.current}`);
+    currPieceIndex.current += 1;
   };
 
   return (
-    <View className="h-full w-full flex-1">
-      <View className={`absolute left-0 top-0 h-full w-full `}>
+    <View className="flex h-full w-full flex-1">
+      <View className="h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="test_z_index_3"
+          resourceName="test_z_index_6"
+          artboardName="vue Ydraggable"
           onStateChanged={handleStateChange}
-          artboardName="test 2"
           fit={Fit.Contain}
           style={{
-            height: '75%',
+            width: '100%',
+          }}
+          dataBinding={AutoBind(true)}
+          onError={(riveError: RNRiveError) => {
+            switch (riveError.type) {
+              case RNRiveErrorType.DataBindingError: {
+                console.error(`${riveError.message}`);
+                return;
+              }
+              default:
+                console.error('Unhandled error');
+            }
           }}
         />
       </View>
-      <View className={`absolute left-0 top-0 h-full w-full ${hide && 'pointer-events-none'}`}>
-        <Rive
-          ref={riveRef}
-          resourceName="test_z_index_3"
-          onStateChanged={handleStateChange}
-          artboardName="test 1"
-          fit={Fit.Contain}
-          style={{
-            height: '75%',
-          }}
-        />
+
+      <View className="h-1/8 absolute bottom-0 z-10 w-full items-center justify-end ">
+        <Pressable onPress={onBtnPress}>
+          <Text className="font-bold uppercase text-orange-600">Click Me</Text>
+        </Pressable>
       </View>
     </View>
   );
