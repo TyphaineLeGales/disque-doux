@@ -9,6 +9,7 @@ import Clean from '@/components/final/2_Clean';
 import Disassemble from '@/components/final/3_Disassemble';
 import Assemble from '@/components/final/4_Assemble';
 import GameTuto from '@/components/final/GameplayTuto';
+import ZIndex from '@/components/rive/tests/ZIndex';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
@@ -50,18 +51,19 @@ export default function Sequence() {
     <GestureHandlerRootView className="flex size-full flex-1">
       <View className="flex size-full w-[100vw] flex-1">
         {!showSuccess && !showTuto && (
-          <ProgressBar 
-            currentPhase={currPhaseIndex} 
-            totalPhases={PHASES.length} 
+          <ProgressBar
+            currentPhase={currPhaseIndex}
+            totalPhases={PHASES.length}
             phaseProgress={phaseProgress}
           />
         )}
-        {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+        <ZIndex />
+        {/* {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
-        {showTuto && <GameTuto id={id} onDone={onTutoDone} />}
+        {showTuto && <GameTuto id={id} onDone={onTutoDone} />} */}
       </View>
     </GestureHandlerRootView>
   );
