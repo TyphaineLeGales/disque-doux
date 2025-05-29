@@ -7,13 +7,24 @@ import Rive, {
   RNRiveError,
   RNRiveErrorType,
   AutoBind,
+  RiveGeneralEvent,
 } from 'rive-react-native';
 
 export default function ZIndex() {
   const riveRef = useRef<RiveRef>(null);
   const currPieceIndex = useRef(1);
 
-  const handleStateChange = (stateMachineName: string, stateName: string) => {};
+  const handleStateChange = (stateMachineName: string, stateName: string) => {
+    console.log('State changed:', { stateMachineName, stateName });
+    if (stateName.includes('inInventory')) {
+      const pieceId = stateName.split('_')[0];
+      console.log('piece id', pieceId);
+      riveRef.current?.setInputStateAtPath('isDraggable', false, `piece ${pieceId}`);
+    }
+  };
+  const handleRiveEvent = (event: RiveGeneralEvent) => {
+    console.log('Event received:', event);
+  };
   const onBtnPress = () => {
     riveRef.current?.setInputStateAtPath('isDraggable', true, `piece ${currPieceIndex.current}`);
     currPieceIndex.current += 1;
@@ -24,9 +35,10 @@ export default function ZIndex() {
       <View className="h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="test_z_index_6"
+          resourceName="test_z_index_12"
           artboardName="vue Ydraggable"
           onStateChanged={handleStateChange}
+          onRiveEventReceived={handleRiveEvent}
           fit={Fit.Contain}
           style={{
             width: '100%',
