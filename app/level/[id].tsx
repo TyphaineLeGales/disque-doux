@@ -10,7 +10,7 @@ import Disassemble from '@/components/final/3_Disassemble';
 import Assemble from '@/components/final/4_Assemble';
 import GameTuto from '@/components/final/GameplayTuto';
 import InstancedPieces from '@/components/rive/tests/InstancedPieces';
-import ZIndex from '@/components/rive/tests/ZIndex';
+import ViewSwitcher from '@/components/rive/tests/ViewSwitcher';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
@@ -58,7 +58,7 @@ export default function Sequence() {
             phaseProgress={phaseProgress}
           />
         )}
-        <ZIndex />
+        <ViewSwitcher />
         {/* <InstancedPieces /> */}
         {/* {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}

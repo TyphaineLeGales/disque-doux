@@ -13,6 +13,7 @@ import Rive, {
 export default function ZIndex() {
   const riveRef = useRef<RiveRef>(null);
   const currPieceIndex = useRef(1);
+  const piecesLeft = useRef(11);
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log('State changed:', { stateMachineName, stateName });
@@ -20,6 +21,8 @@ export default function ZIndex() {
       const pieceId = stateName.split('_')[0];
       console.log('piece id', pieceId);
       riveRef.current?.setInputStateAtPath('isDraggable', false, `piece ${pieceId}`);
+      piecesLeft.current -= 1;
+      console.log('pieces left', piecesLeft.current);
     }
   };
   const handleRiveEvent = (event: RiveGeneralEvent) => {
