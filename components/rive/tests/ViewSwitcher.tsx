@@ -1,9 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Text, View, Pressable } from 'react-native';
+import React, { useRef } from 'react';
+import { Text, View, Pressable, ImageBackground } from 'react-native';
 import Rive, {
   Fit,
   RiveRef,
-  BindByName,
   RNRiveError,
   RNRiveErrorType,
   AutoBind,
@@ -17,6 +16,12 @@ export default function ViewSwitcher() {
   const currViewIndex = useRef(1);
   const currViewName = useRef('X');
   const piecesInInventory = useRef([]);
+  const _VIEWS = {
+    1: 'X',
+    2: '-Y',
+    3: '-X',
+    4: 'Y',
+  };
 
   const extractId = (str: string) => {
     const match = str.match(/\d+/);
@@ -25,25 +30,20 @@ export default function ViewSwitcher() {
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log('State changed:', { stateMachineName, stateName });
+  };
 
-    // if (stateName.includes('inInventory')) {
-    //   const pieceId = stateName.split('_')[0];
-    //   console.log('piece id', pieceId);
-    //   riveRef.current?.setInputStateAtPath('isDraggable', false, `piece ${pieceId}`);
-    //   piecesLeft.current -= 1;
-    //   console.log('pieces left', piecesLeft.current);
-    // }
+  const setInputForAllViews = (stateName: string, value: boolean | number, id: number) => {
+    riveRef.current?.setInputStateAtPath(stateName, value, `X${id}`);
+    riveRef.current?.setInputStateAtPath(stateName, value, `-X${id}`);
+    riveRef.current?.setInputStateAtPath(stateName, value, `Y${id}`);
+    riveRef.current?.setInputStateAtPath(stateName, value, `-Y${id}`);
   };
 
   const onPieceInInventory = (id: number) => {
     piecesInInventory.current = [...piecesInInventory.current, id];
     piecesLeft.current -= 1;
     riveRef.current?.setInputStateAtPath('full', true, `inventory_piece_${id}`);
-    // setInInventory in all faces
-    riveRef.current?.setInputStateAtPath('inInventory', true, `X${id}`);
-    riveRef.current?.setInputStateAtPath('inInventory', true, `-X${id}`);
-    riveRef.current?.setInputStateAtPath('inInventory', true, `Y${id}`);
-    riveRef.current?.setInputStateAtPath('inInventory', true, `-Y${id}`);
+    setInputForAllViews('inInventory', true, id);
   };
   const handleRiveEvent = (event: RiveGeneralEvent) => {
     console.log('Event received:', event);
@@ -55,62 +55,59 @@ export default function ViewSwitcher() {
   const onChangePiece = () => {
     console.log('on change piece');
     console.log(currViewName.current, currPieceIndex.current);
-    riveRef.current?.setInputStateAtPath(
-      'isDraggable',
-      true,
-      `${currViewName.current}${currPieceIndex.current}`
-    );
+    setInputForAllViews('isDraggable', true, currPieceIndex.current);
     currPieceIndex.current += 1;
   };
 
   const onChangeView = () => {
-    console.log('on change view');
-    if (currViewIndex.current === 1) {
-      currViewIndex.current = 2;
-      currViewName.current = '-Y';
-    } else {
-      currViewIndex.current = 1;
-      currViewName.current = 'X';
-    }
-    console.log('view', currViewIndex.current);
+    console.log('on change view', currViewIndex.current);
+    currViewIndex.current += 1;
+    if (currViewIndex.current === 5) currViewIndex.current = 1;
+
+    currViewName.current = _VIEWS[currViewIndex.current];
     riveRef.current?.setInputState('main', 'vueID', currViewIndex.current);
   };
 
   return (
-    <View className="flex h-full w-full flex-1">
-      <View className="h-full w-full flex-1">
-        <Rive
-          ref={riveRef}
-          resourceName="viewSwitcher_11"
-          artboardName="main"
-          onStateChanged={handleStateChange}
-          onRiveEventReceived={handleRiveEvent}
-          fit={Fit.Contain}
-          style={{
-            width: '100%',
-          }}
-          dataBinding={AutoBind(true)}
-          onError={(riveError: RNRiveError) => {
-            switch (riveError.type) {
-              case RNRiveErrorType.DataBindingError: {
-                console.error(`${riveError.message}`);
-                return;
+    <View className="flex h-full w-full flex-1 bg-[#FEF7E1]">
+      <ImageBackground
+        source={require('../../../assets/images/BackgroundQuadrille.svg')}
+        resizeMode="stretch"
+        className="m-0 h-[100vw] w-[100vw] flex-1 p-0">
+        <View className="h-full w-full flex-1">
+          <Rive
+            ref={riveRef}
+            resourceName="viewSwitcher_15"
+            artboardName="main"
+            onStateChanged={handleStateChange}
+            onRiveEventReceived={handleRiveEvent}
+            fit={Fit.Contain}
+            style={{
+              width: '100%',
+            }}
+            dataBinding={AutoBind(true)}
+            onError={(riveError: RNRiveError) => {
+              switch (riveError.type) {
+                case RNRiveErrorType.DataBindingError: {
+                  console.error(`${riveError.message}`);
+                  return;
+                }
+                default:
+                  console.error('Unhandled error');
               }
-              default:
-                console.error('Unhandled error');
-            }
-          }}
-        />
-      </View>
+            }}
+          />
 
-      <View className="h-1/8 absolute bottom-0 z-10 m-6 flex w-full items-center justify-end bg-slate-100">
-        <Pressable onPress={onChangePiece} className="m-6">
-          <Text className="font-bold uppercase text-orange-600">change piece</Text>
-        </Pressable>
-        <Pressable onPress={onChangeView}>
-          <Text className="font-bold uppercase text-orange-600">change View</Text>
-        </Pressable>
-      </View>
+          <View className="h-1/10 absolute bottom-1/4 z-10 m-6 flex w-full items-center justify-end">
+            <Pressable onPress={onChangePiece} className="m-6">
+              <Text className="font-bold uppercase text-orange-600">change piece</Text>
+            </Pressable>
+            <Pressable onPress={onChangeView}>
+              <Text className="font-bold uppercase text-orange-600">change View</Text>
+            </Pressable>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   );
 }
