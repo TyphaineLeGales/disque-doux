@@ -10,7 +10,7 @@ import Disassemble from '@/components/final/3_Disassemble';
 import Assemble from '@/components/final/4_Assemble';
 import GameTuto from '@/components/final/GameplayTuto';
 import InstancedPieces from '@/components/rive/tests/InstancedPieces';
-import ViewSwitcher from '@/components/rive/tests/ViewSwitcher';
+import ZIndex from '@/components/rive/tests/ZIndex';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
@@ -45,20 +45,19 @@ export default function Sequence() {
   };
 
   const updatePhaseProgress = (progress: number) => {
+    console.log('progress in updatePhaseProgress', progress);
     setPhaseProgress(progress);
   };
 
   return (
     <GestureHandlerRootView className="flex size-full flex-1">
       <View className="flex size-full w-[100vw] flex-1">
-        {!showSuccess && !showTuto && (
-          <ProgressBar
-            currentPhase={currPhaseIndex}
-            totalPhases={PHASES.length}
-            phaseProgress={phaseProgress}
-          />
-        )}
-        <ViewSwitcher />
+        <ProgressBar
+          currentPhase={currPhaseIndex}
+          totalPhases={PHASES.length}
+          phaseProgress={phaseProgress}
+        />
+        <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
         {/* <InstancedPieces /> */}
         {/* {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}

@@ -77,7 +77,7 @@ export default function ViewSwitcher() {
         <View className="h-full w-full flex-1">
           <Rive
             ref={riveRef}
-            resourceName="viewSwitcher_15"
+            resourceName="viewSwitcher_14"
             artboardName="main"
             onStateChanged={handleStateChange}
             onRiveEventReceived={handleRiveEvent}
