@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import React, { useRef, useState } from 'react';
 import { Text, View, Pressable } from 'react-native';
 import Rive, {
@@ -8,6 +9,8 @@ import Rive, {
   AutoBind,
   RiveGeneralEvent,
 } from 'rive-react-native';
+
+import Unscrew from '@/components/rive/final/Unscrew';
 
 type DisassembleProps = {
   onDone: Function;
@@ -46,13 +49,13 @@ export default function Disassemble(props: DisassembleProps) {
     },
   ];
   const riveRef = useRef<RiveRef>(null);
-  const riveRefPopup = useRef<RiveRef>(null);
   const currPieceIndex = useRef(1);
   const currViewIndex = useRef(0);
   //const currViewName = useRef('X'); -> _views[currViewIndex]
   const piecesInInventory = useRef([]);
   const _VIEWS = ['X', '-Y', '-X', 'Y'];
   const [showUnscrew, setShowUnscrew] = useState(false);
+  const showScrewTuto = useRef(true);
 
   const onChangeView = () => {
     console.log('on change view', currViewIndex.current);
@@ -73,16 +76,20 @@ export default function Disassemble(props: DisassembleProps) {
     return match ? match[1] : null;
   };
 
+  const onScrewingDone = () => {
+    riveRef.current?.setInputState('State Machine 1', 'showunscrew', false);
+    showScrewTuto.current = false;
+    setShowUnscrew(false);
+    riveRef?.current?.play();
+  };
+
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log('State changed:', { stateMachineName, stateName });
     if (stateName === 'showunscrew') {
       riveRef.current?.setInputStateAtPath('isOpen', false, 'toolLayer /toolbox');
       riveRef.current?.setInputStateAtPath('screwdriverSelected', false, 'toolLayer ');
+      riveRef?.current?.pause();
       setShowUnscrew(true);
-      setTimeout(() => {
-        riveRef.current?.setInputState('State Machine 1', 'showunscrew', false);
-        setShowUnscrew(false);
-      }, 2000);
     }
   };
 
@@ -122,6 +129,7 @@ export default function Disassemble(props: DisassembleProps) {
       const screwId = SCREWTARGETS[currViewIndex.current][targetType];
       console.log(targetType, _VIEWS[currViewIndex.current], screwId);
       hideScrew(screwId);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
   const onChangePiece = () => {
@@ -134,7 +142,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble31"
+          resourceName="disassemble32"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
@@ -164,18 +172,7 @@ export default function Disassemble(props: DisassembleProps) {
           </Pressable>
         </View>
       </View>
-      {showUnscrew && (
-        <View className="absolute h-full w-full flex-1">
-          <Rive
-            ref={riveRefPopup}
-            resourceName="pop_up_devisse"
-            fit={Fit.Contain}
-            style={{
-              width: '100%',
-            }}
-          />
-        </View>
-      )}
+      {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
     </View>
   );
 }
