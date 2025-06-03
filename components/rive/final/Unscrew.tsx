@@ -25,8 +25,14 @@ export default function Unscrew(props: DisassembleProps) {
   const riveRefGame = useRef(null);
   const angle = useSharedValue(0); // cumulative angle
   const prevAngle = useSharedValue(0);
-
   const isDone = useRef(false);
+
+  useEffect(() => {
+    riveRefGame.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
+    if (!props.showTuto) {
+      riveRefGame.current?.fireState('State Machine 1', 'transitionIn');
+    }
+  }, []);
 
   // 👇 Convert touch to angle
 
@@ -111,7 +117,7 @@ export default function Unscrew(props: DisassembleProps) {
       riveRefGame.current?.setInputStateAtPath('showMask', true, 'screw');
     }
     if (event.name === 'hideTuto') {
-      riveRefGame.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
+      riveRefGame.current?.fireState('State Machine 1', 'transitionIn');
       riveRefTuto.current?.fireState('State Machine 1', 'hide');
       riveRefTuto.current?.pause();
       riveRefGame.current?.setInputStateAtPath('showMask', true, 'screw');
@@ -124,7 +130,7 @@ export default function Unscrew(props: DisassembleProps) {
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_devisse_6"
+            resourceName="pop_up_devisse_11"
             artboardName="Game"
             fit={Fit.Contain}
             onRiveEventReceived={handleRiveEvent}
@@ -135,10 +141,9 @@ export default function Unscrew(props: DisassembleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_devisse_6"
+              resourceName="pop_up_devisse_11"
               artboardName="Tuto"
               fit={Fit.Contain}
-              className="absolute top-0 h-full w-full"
               onRiveEventReceived={handleRiveEvent}
               style={{ width: '100%', pointerEvents: 'none' }}
             />
