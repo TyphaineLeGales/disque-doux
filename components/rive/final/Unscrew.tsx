@@ -85,11 +85,12 @@ export default function Unscrew(props: DisassembleProps) {
       if (isDone.current) return;
 
       if (num < THRESHOLD) {
-        riveRefGame.current?.setInputStateAtPath('progress', num % 100, 'screw'); // loop 0-100
+        riveRefGame.current?.setInputStateAtPath('progressPosition', num / 10, 'screw'); // modulo 100 === 1 turn -> we need to do several turns,
+        riveRefGame.current?.setInputStateAtPath('progressRotation', num % 100, 'screw');
       } else {
         isDone.current = true;
         riveRefGame.current?.fireState('State Machine 1', 'onScrewDone');
-        setTimeout(props.onDone, 3000);
+        setTimeout(props.onDone, 500);
       }
     },
     [props.onDone]
@@ -106,10 +107,14 @@ export default function Unscrew(props: DisassembleProps) {
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
     console.log('event', event);
+    if (event.name === 'showmask') {
+      riveRefGame.current?.setInputStateAtPath('showMask', true, 'screw');
+    }
     if (event.name === 'hideTuto') {
       riveRefGame.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
       riveRefTuto.current?.fireState('State Machine 1', 'hide');
       riveRefTuto.current?.pause();
+      riveRefGame.current?.setInputStateAtPath('showMask', true, 'screw');
     }
   };
 
@@ -119,7 +124,7 @@ export default function Unscrew(props: DisassembleProps) {
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_devisse_5"
+            resourceName="pop_up_devisse_6"
             artboardName="Game"
             fit={Fit.Contain}
             onRiveEventReceived={handleRiveEvent}
@@ -130,7 +135,7 @@ export default function Unscrew(props: DisassembleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_devisse_5"
+              resourceName="pop_up_devisse_6"
               artboardName="Tuto"
               fit={Fit.Contain}
               className="absolute top-0 h-full w-full"

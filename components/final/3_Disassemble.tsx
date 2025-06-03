@@ -58,7 +58,7 @@ export default function Disassemble(props: DisassembleProps) {
   const showScrewTuto = useRef(true);
 
   const onChangeView = () => {
-    console.log('on change view', currViewIndex.current);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     currViewIndex.current += 1;
     if (currViewIndex.current === 4) {
       currViewIndex.current = 0;
@@ -108,6 +108,7 @@ export default function Disassemble(props: DisassembleProps) {
   };
 
   const onPieceInInventory = (id: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     piecesInInventory.current = [...piecesInInventory.current, id];
     riveRef.current?.setInputStateAtPath('full', true, `inventory_piece_${id}`);
     setInputForAllViews('inInventory', true, id);
