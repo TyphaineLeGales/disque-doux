@@ -17,6 +17,11 @@ export default function Clean(props: CleanProps) {
   const [currentFaceId, setCurrentFaceId] = useState(0);
 
   useEffect(() => {
+    // for debugging and implementing the flow
+    setTimeout(props.onDone, 3000);
+  }, []);
+
+  useEffect(() => {
     if (riveRef.current) {
       try {
         riveRef.current.setInputStateAtPath('FaceId', currentFaceId, 'Object');

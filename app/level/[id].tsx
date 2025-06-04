@@ -9,23 +9,16 @@ import Clean from '@/components/final/2_Clean';
 import Disassemble from '@/components/final/3_Disassemble';
 import Assemble from '@/components/final/4_Assemble';
 import GameTuto from '@/components/final/GameplayTuto';
-import InstancedPieces from '@/components/rive/tests/InstancedPieces';
-import ZIndex from '@/components/rive/tests/ZIndex';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import ProgressBar from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { phaseIndex } = useLevelStore();
+  const { phaseIndex, setPhaseIndex } = useLevelStore();
   const PHASES = ['FindTools', 'Clean', 'Disassemble', 'Assemble'];
-  const [currPhaseIndex, setCurrPhaseIndex] = useState(phaseIndex || 0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showTuto, setShowTuto] = useState(false);
   const [phaseProgress, setPhaseProgress] = useState(0);
-
-  useEffect(() => {
-    setCurrPhaseIndex(phaseIndex);
-  }, [phaseIndex]);
 
   const onPhaseDone = () => {
     setTimeout(() => {
@@ -41,7 +34,7 @@ export default function Sequence() {
   const handleSuccessComplete = () => {
     setShowSuccess(false);
     setShowTuto(true);
-    setCurrPhaseIndex((prev) => prev + 1);
+    setPhaseIndex(phaseIndex + 1);
   };
 
   const updatePhaseProgress = (progress: number) => {
@@ -52,19 +45,22 @@ export default function Sequence() {
   return (
     <GestureHandlerRootView className="flex size-full flex-1">
       <View className="flex size-full w-[100vw] flex-1">
-        <ProgressBar
-          currentPhase={currPhaseIndex}
-          totalPhases={PHASES.length}
-          phaseProgress={phaseProgress}
-        />
-        <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
-        {/* <InstancedPieces /> */}
-        {/* {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+        {/* <ProgressBar totalPhases={PHASES.length} phaseProgress={phaseProgress} /> */}
+
+        {phaseIndex === 0 && (
+          <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
+        {phaseIndex === 1 && (
+          <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
+        {phaseIndex === 2 && (
+          <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
+        {phaseIndex === 3 && (
+          <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
-        {showTuto && <GameTuto id={id} onDone={onTutoDone} />} */}
+        {showTuto && <GameTuto id={id} onDone={onTutoDone} />}
       </View>
     </GestureHandlerRootView>
   );

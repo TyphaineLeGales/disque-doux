@@ -1,6 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { View } from 'react-native';
-import Rive, { Fit, RiveRef } from 'rive-react-native';
+import React, { useRef } from 'react';
+import { Pressable } from 'react-native';
+import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
+
+import { useLevelStore } from '@/stores/levelStore';
 
 type SuccessProps = {
   onAnimationComplete: () => void;
@@ -8,26 +10,35 @@ type SuccessProps = {
 
 export default function Success({ onAnimationComplete }: SuccessProps) {
   const riveComponentRef = useRef<RiveRef>(null);
+  const { phaseIndex } = useLevelStore();
+  const animationIsDone = useRef(false);
 
-  const animationDuration = 3000;
+  const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
+    if (event.name === 'showArrow') {
+      animationIsDone.current = true;
+      riveComponentRef.current?.setInputStateAtPath('ShowArrow', true, 'ArrowNext');
+    }
+  };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onAnimationComplete();
-    }, animationDuration);
-    return () => clearTimeout(timer);
-  }, [onAnimationComplete]);
+  const handlePress = () => {
+    if (!animationIsDone.current) return;
+    onAnimationComplete();
+  };
 
   return (
-    <View className="absolute bottom-0 left-0 right-0 top-0">
+    <Pressable
+      onPress={handlePress}
+      className="absolute bottom-0 left-0 right-0 top-0"
+      style={{ zIndex: 10 }}>
       <Rive
         ref={riveComponentRef}
-        resourceName="success"
-        fit={Fit.Cover}
+        resourceName="successscreens_3"
+        artboardName={`success_${phaseIndex + 1}`}
+        fit={Fit.Contain}
         autoplay
-        animationName="Success"
-        style={{ width: '100%', height: '100%' }}
+        style={{ height: '100%', pointerEvents: 'none' }}
+        onRiveEventReceived={handleRiveEvent}
       />
-    </View>
+    </Pressable>
   );
 }

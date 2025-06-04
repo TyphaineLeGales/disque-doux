@@ -14,8 +14,10 @@ import Svg, {
   FeBlend,
 } from 'react-native-svg';
 
+import ValidateIcon from '@/components/ui/ValidateIcon';
+import { useLevelStore } from '@/stores/levelStore';
+
 type ProgressBarProps = {
-  currentPhase: number;
   totalPhases: number;
   phaseProgress: number;
 };
@@ -24,24 +26,6 @@ const COLORS = {
   completed: '#EC7611',
   background: '#E8C29C',
 } as const;
-
-const ValidateIcon = () => (
-  <Svg width="54" height="54" viewBox="0 0 54 54" fill="none">
-    <Path
-      d="M22.2555 5.37292C23.2911 4.28198 24.9656 4.1044 26.2069 4.95388L31.1647 8.3465C31.6966 8.71052 32.3299 8.89745 32.9743 8.88068L38.9796 8.72438C40.4833 8.68525 41.7929 9.74372 42.07 11.2222L43.1768 17.1268C43.2955 17.7603 43.6111 18.3403 44.0786 18.784L48.4355 22.92C49.5265 23.9556 49.7041 25.6301 48.8546 26.8714L45.462 31.8292C45.0979 32.3611 44.911 32.9944 44.9278 33.6387L45.0841 39.6441C45.1232 41.1478 44.0647 42.4574 42.5863 42.7345L36.6817 43.8412C36.0481 43.96 35.4682 44.2756 35.0244 44.7431L30.8885 49.1C29.8529 50.191 28.1784 50.3685 26.937 49.5191L21.9793 46.1265C21.4473 45.7624 20.8141 45.5755 20.1697 45.5923L14.1643 45.7486C12.6607 45.7877 11.3511 44.7292 11.074 43.2508L9.96723 37.3462C9.84848 36.7126 9.5329 36.1327 9.06541 35.6889L4.70844 31.553C3.6175 30.5174 3.43992 28.8429 4.2894 27.6015L7.68202 22.6438C8.04604 22.1118 8.23297 21.4786 8.2162 20.8342L8.0599 14.8288C8.02077 13.3251 9.07924 12.0155 10.5577 11.7384L16.4623 10.6317C17.0958 10.513 17.6758 10.1974 18.1196 9.72989L22.2555 5.37292Z"
-      fill="#FCCB43"
-    />
-    <Path
-      d="M22.3342 6.11382C23.3698 5.02288 25.0443 4.84531 26.2857 5.69479L30.9954 8.91767C31.5274 9.28169 32.1606 9.46862 32.805 9.45185L38.5099 9.30338C40.0136 9.26424 41.3232 10.3227 41.6003 11.8012L42.6517 17.4104C42.7704 18.0439 43.086 18.6239 43.5535 19.0676L47.6925 22.9967C48.7834 24.0322 48.961 25.7067 48.1115 26.9481L44.8886 31.6578C44.5246 32.1898 44.3377 32.823 44.3544 33.4674L44.5029 39.1723C44.5421 40.676 43.4836 41.9856 42.0051 42.2627L36.3959 43.3141C35.7624 43.4328 35.1824 43.7484 34.7387 44.2159L30.8096 48.3549C29.774 49.4458 28.0996 49.6234 26.8582 48.7739L22.1485 45.551C21.6165 45.187 20.9833 45.0001 20.3389 45.0168L14.634 45.1653C13.1303 45.2045 11.8207 44.146 11.5436 42.6675L10.4922 37.0583C10.3735 36.4248 10.0579 35.8448 9.59041 35.4011L5.45142 31.472C4.36048 30.4365 4.18291 28.762 5.03238 27.5206L8.25527 22.8109C8.61929 22.2789 8.80622 21.6457 8.78945 21.0013L8.64097 15.2964C8.60184 13.7927 9.66031 12.4831 11.1388 12.206L16.748 11.1546C17.3815 11.0359 17.9615 10.7203 18.4052 10.2528L22.3342 6.11382Z"
-      stroke="#EC7611"
-      strokeWidth="1.02104"
-    />
-    <Path
-      d="M21.921 34.1876C21.9434 34.2175 21.9524 34.253 21.9766 34.2818C22.0117 34.321 22.0583 34.3391 22.0984 34.3705C22.1456 34.4098 22.1917 34.4473 22.2442 34.4775C22.2957 34.5058 22.3476 34.5267 22.4031 34.5456C22.4814 34.5748 22.5592 34.5949 22.6413 34.604C22.6752 34.6067 22.7085 34.6062 22.7432 34.6061C22.8469 34.6073 22.9472 34.5924 23.0501 34.5617C23.0682 34.5558 23.0839 34.5477 23.102 34.5419C23.1701 34.5172 23.24 34.5036 23.3033 34.4626C23.3485 34.4336 23.3768 34.3881 23.416 34.353C23.4178 34.3519 23.421 34.3513 23.4213 34.3498L35.3256 23.0213C35.4248 22.9308 35.5051 22.8217 35.5621 22.7002C35.6191 22.5787 35.6516 22.4472 35.6577 22.3131C35.6639 22.1791 35.6436 22.0451 35.598 21.9189C35.5523 21.7927 35.4823 21.6767 35.3919 21.5776C35.3014 21.4784 35.1923 21.3981 35.0708 21.3411C34.9493 21.2841 34.8178 21.2516 34.6837 21.2455C34.5497 21.2393 34.4157 21.2596 34.2895 21.3053C34.1633 21.3509 34.0473 21.4209 33.9482 21.5113L22.9531 31.9739L19.7296 26.679C19.657 26.5662 19.5629 26.4689 19.4527 26.3925C19.3425 26.3161 19.2183 26.2622 19.0873 26.2338C18.9562 26.2054 18.8209 26.2031 18.6889 26.227C18.557 26.2509 18.431 26.3005 18.3183 26.3731C18.2055 26.4457 18.1082 26.5398 18.0318 26.65C17.9554 26.7602 17.9015 26.8844 17.8731 27.0154C17.8447 27.1465 17.8423 27.2818 17.8663 27.4138C17.8902 27.5457 17.9398 27.6717 18.0124 27.7844L21.8901 34.1555C21.8974 34.168 21.9108 34.1744 21.921 34.1876Z"
-      fill="#EC7611"
-    />
-  </Svg>
-);
 
 const CurrentIcon = () => (
   <Svg width="56" height="55" viewBox="0 0 56 55" fill="none">
@@ -96,21 +80,22 @@ const CurrentIcon = () => (
   </Svg>
 );
 
-export const ProgressBar = ({ currentPhase, totalPhases, phaseProgress }: ProgressBarProps) => {
+export default function ProgressBar({ totalPhases, phaseProgress }: ProgressBarProps) {
+  const { phaseIndex } = useLevelStore();
   const animatedStyle = useAnimatedStyle(() => ({
     width: withTiming(`${phaseProgress * 100}%`, { duration: 300 }),
   }));
 
   return (
-    <View className="absolute left-0 right-0 top-0 z-20 flex-row items-center justify-center px-4 py-6">
+    <View className="absolute left-0 right-0 top-0 z-20 flex-row items-center justify-center bg-black px-4 py-6">
       <View className="flex-row items-center justify-center">
         {Array.from({ length: totalPhases }).map((_, index) => (
           <React.Fragment key={index}>
-            {index < currentPhase ? (
+            {index < phaseIndex ? (
               <View className="z-50 flex h-[46px] w-[46px] -rotate-6 items-center justify-center">
                 <ValidateIcon />
               </View>
-            ) : index === currentPhase ? (
+            ) : index === phaseIndex ? (
               <View className="rotate-11 z-50 flex h-[48px] w-[48px] items-center justify-center">
                 <CurrentIcon />
               </View>
@@ -132,14 +117,14 @@ export const ProgressBar = ({ currentPhase, totalPhases, phaseProgress }: Progre
                   <Animated.View
                     className="z-0 h-1.5"
                     style={[
-                      index === currentPhase
+                      index === phaseIndex
                         ? animatedStyle
-                        : { width: `${index < currentPhase ? 100 : 0}%` },
+                        : { width: `${index < phaseIndex ? 100 : 0}%` },
                       {
                         backgroundColor:
-                          index < currentPhase
+                          index < phaseIndex
                             ? `${COLORS.completed}`
-                            : index === currentPhase
+                            : index === phaseIndex
                               ? COLORS.completed
                               : 'transparent',
                       },
@@ -153,4 +138,4 @@ export const ProgressBar = ({ currentPhase, totalPhases, phaseProgress }: Progre
       </View>
     </View>
   );
-};
+}
