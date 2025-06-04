@@ -18,7 +18,7 @@ export default function Sequence() {
   const PHASES = ['FindTools', 'Clean', 'Disassemble', 'Assemble'];
   const [currPhaseIndex, setCurrPhaseIndex] = useState(phaseIndex || 0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [showTuto, setShowTuto] = useState(false);
+
   const [phaseProgress, setPhaseProgress] = useState(0);
 
   useEffect(() => {
@@ -31,14 +31,9 @@ export default function Sequence() {
     }, 1000);
   };
 
-  const onTutoDone = () => {
-    setShowTuto(false);
-    setPhaseProgress(0);
-  };
-
   const handleSuccessComplete = () => {
     setShowSuccess(false);
-    setShowTuto(true);
+
     setCurrPhaseIndex((prev) => prev + 1);
   };
 
@@ -49,19 +44,24 @@ export default function Sequence() {
   return (
     <GestureHandlerRootView className="flex size-full flex-1">
       <View className="flex size-full w-[100vw] flex-1">
-        {!showSuccess && !showTuto && (
-          <ProgressBar 
-            currentPhase={currPhaseIndex} 
-            totalPhases={PHASES.length} 
+        {!showSuccess && (
+          <ProgressBar
+            currentPhase={currPhaseIndex}
+            totalPhases={PHASES.length}
             phaseProgress={phaseProgress}
           />
         )}
-       {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {/* {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />} */}
+        {currPhaseIndex === 0 && (
+          <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
+        {currPhaseIndex === 1 && (
+          <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
+        {currPhaseIndex === 2 && (
+          <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        )}
+
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
-        {showTuto && <GameTuto id={id} onDone={onTutoDone} />}
       </View>
     </GestureHandlerRootView>
   );

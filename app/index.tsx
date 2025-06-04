@@ -26,7 +26,7 @@ export default function Home() {
       );
     } else {
       setTimeout(() => {
-        router.replace(isFirstTime ? '/tutoriel' : '/start');
+        router.replace('/start');
       }, 100);
     }
 

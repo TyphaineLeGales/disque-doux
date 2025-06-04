@@ -113,7 +113,7 @@ export default function Disassemble(props: DisassembleProps) {
     riveRef.current?.setInputStateAtPath('full', true, `inventory_piece_${id}`);
     setInputForAllViews('inInventory', true, id);
     onProgress(piecesInInventory.current.length / TOTAL_PIECES);
-    if (piecesInInventory.current.length === TOTAL_PIECES - 1) {
+    if (piecesInInventory.current.length === TOTAL_PIECES) {
       props.onDone();
     }
   };
@@ -143,7 +143,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble32"
+          resourceName="disassemble33"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}

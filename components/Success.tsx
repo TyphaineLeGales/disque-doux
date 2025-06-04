@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import React, { useRef } from 'react';
 import { Pressable } from 'react-native';
 import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
@@ -21,6 +22,7 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
   };
 
   const handlePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (!animationIsDone.current) return;
     onAnimationComplete();
   };

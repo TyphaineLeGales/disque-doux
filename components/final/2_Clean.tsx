@@ -1,7 +1,7 @@
+import * as Haptics from 'expo-haptics';
 import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Rive, { Fit, RiveRef, RiveEvent } from 'rive-react-native';
-import * as Haptics from 'expo-haptics';
 
 type CleanProps = {
   onDone: Function;
@@ -27,11 +27,11 @@ const useFaceStates = (faceCount: number) => {
   );
 
   const updateFaceOpacity = (faceId: number, newOpacity: number) => {
-    setFaceStates(prev => {
+    setFaceStates((prev) => {
       const newStates = [...prev];
       newStates[faceId - 1] = {
         opacity: newOpacity,
-        isCleaned: newOpacity === 0
+        isCleaned: newOpacity === 0,
       };
       return newStates;
     });
@@ -56,7 +56,7 @@ const useCleaning = (
       opacityInterval.current = setInterval(() => {
         const currentOpacity = faceStates[currentFaceId - 1].opacity;
         const newOpacity = Math.max(0, currentOpacity - OPACITY_DECREASE_RATE);
-        
+
         updateFaceOpacity(currentFaceId, newOpacity);
         if (riveRef.current) {
           riveRef.current.setInputState('main', 'Opacity', newOpacity);
@@ -88,10 +88,7 @@ const useCleaning = (
   return { isInState, setIsInState, isDragging, setIsDragging };
 };
 
-const useFaceNavigation = (
-  faceStates: FaceState[],
-  riveRef: React.RefObject<RiveRef>
-) => {
+const useFaceNavigation = (faceStates: FaceState[], riveRef: React.RefObject<RiveRef>) => {
   const [currentFaceId, setCurrentFaceId] = useState(2);
 
   const navigateToFace = (newFaceId: number) => {
@@ -120,8 +117,16 @@ export default function Clean({ debug = false, ...props }: CleanProps) {
   const [clientCoords, setClientCoords] = useState({ x: 0, y: 0 });
   const [riveData, setRiveData] = useState<any>(null);
   const { faceStates, updateFaceOpacity } = useFaceStates(FACE_COUNT);
-  const { currentFaceId, handleIncrement, handleDecrement } = useFaceNavigation(faceStates, riveRef);
-  const { isInState, setIsInState, isDragging, setIsDragging } = useCleaning(faceStates, currentFaceId, updateFaceOpacity, riveRef);
+  const { currentFaceId, handleIncrement, handleDecrement } = useFaceNavigation(
+    faceStates,
+    riveRef
+  );
+  const { isInState, setIsInState, isDragging, setIsDragging } = useCleaning(
+    faceStates,
+    currentFaceId,
+    updateFaceOpacity,
+    riveRef
+  );
 
   const handleEvent = (event: RiveEvent) => {
     console.log('Rive Event:', {
@@ -129,9 +134,9 @@ export default function Clean({ debug = false, ...props }: CleanProps) {
       type: event.type,
       properties: event.properties,
       instance: event.instance,
-      data: event.data
+      data: event.data,
     });
-    
+
     switch (event.name) {
       case 'StainEnter':
         setIsInState(true);
@@ -171,7 +176,7 @@ export default function Clean({ debug = false, ...props }: CleanProps) {
             <Text>Is In State: {isInState ? 'true' : 'false'}</Text>
             <Text>Is Dragging: {isDragging ? 'true' : 'false'}</Text>
             <Text style={{ paddingTop: 200 }}>
-              Face Opacities: {faceStates.map(f => f.opacity).join(', ')}
+              Face Opacities: {faceStates.map((f) => f.opacity).join(', ')}
             </Text>
             <Text style={{ paddingTop: 20 }}>
               Touch Coordinates: X: {clientCoords.x.toFixed(2)}, Y: {clientCoords.y.toFixed(2)}
@@ -184,12 +189,8 @@ export default function Clean({ debug = false, ...props }: CleanProps) {
                 <Text style={{ paddingTop: 10 }}>
                   State Machine: {JSON.stringify(riveData.stateMachine)}
                 </Text>
-                <Text style={{ paddingTop: 10 }}>
-                  Inputs: {JSON.stringify(riveData.inputs)}
-                </Text>
-                <Text style={{ paddingTop: 10 }}>
-                  File: {JSON.stringify(riveData.file)}
-                </Text>
+                <Text style={{ paddingTop: 10 }}>Inputs: {JSON.stringify(riveData.inputs)}</Text>
+                <Text style={{ paddingTop: 10 }}>File: {JSON.stringify(riveData.file)}</Text>
               </>
             )}
           </>
