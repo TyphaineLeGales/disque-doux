@@ -1,19 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import Svg, {
-  Path,
-  G,
-  Defs,
-  Filter,
-  FeFlood,
-  FeColorMatrix,
-  FeOffset,
-  FeGaussianBlur,
-  FeComposite,
-  FeBlend,
-} from 'react-native-svg';
-
+import Svg, { Path, G, Defs, Filter, FeFlood, FeColorMatrix, FeOffset, FeGaussianBlur, FeComposite, FeBlend } from 'react-native-svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ValidateIcon from '@/components/ui/ValidateIcon';
 import { useLevelStore } from '@/stores/levelStore';
 
@@ -80,14 +69,15 @@ const CurrentIcon = () => (
   </Svg>
 );
 
-export default function ProgressBar({ totalPhases, phaseProgress }: ProgressBarProps) {
+export const ProgressBar = ({ currentPhase, totalPhases, phaseProgress }: ProgressBarProps) => {
+  const insets = useSafeAreaInsets();
   const { phaseIndex } = useLevelStore();
   const animatedStyle = useAnimatedStyle(() => ({
     width: withTiming(`${phaseProgress * 100}%`, { duration: 300 }),
   }));
 
   return (
-    <View className="absolute left-0 right-0 top-0 z-20 flex-row items-center justify-center bg-black px-4 py-6">
+    <View className="absolute left-0 right-0 top-0 z-10 flex-row items-center justify-center" style={{ paddingTop: insets.top }}>
       <View className="flex-row items-center justify-center">
         {Array.from({ length: totalPhases }).map((_, index) => (
           <React.Fragment key={index}>

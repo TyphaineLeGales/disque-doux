@@ -1,3 +1,4 @@
+import { Container } from '@/components/ui/Container';
 import { Link, Stack } from 'expo-router';
 import { Text } from 'react-native';
 
