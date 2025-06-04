@@ -96,6 +96,12 @@ const useFaceNavigation = (
 
   const navigateToFace = (newFaceId: number) => {
     setCurrentFaceId(newFaceId);
+=======
+    // for debugging and implementing the flow
+    setTimeout(props.onDone, 3000);
+  }, []);
+
+  useEffect(() => {
     if (riveRef.current) {
       riveRef.current.setInputState('main', 'FaceId', newFaceId);
       riveRef.current.setInputState('main', 'Opacity', faceStates[newFaceId - 1].opacity);

@@ -22,7 +22,6 @@ export default function FindTools(props: FindToolProps) {
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
-    console.log('event', event.name);
     if (event.name === 'Drop') {
       toolsFound.current++;
       onProgress(toolsFound.current / TOTAL_TOOLS);

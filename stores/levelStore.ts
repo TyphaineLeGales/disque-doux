@@ -13,5 +13,8 @@ export const useLevelStore = create<LevelStore>((set) => ({
   level: 0,
   phaseIndex: 0,
   setLevel: (val) => set({ level: val }),
-  setPhaseIndex: (index) => set({ phaseIndex: index }),
+  setPhaseIndex: (index) => {
+    set({ phaseIndex: index });
+    console.log('in store phase is set to', index);
+  },
 }));
