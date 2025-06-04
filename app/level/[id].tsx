@@ -9,16 +9,21 @@ import Clean from '@/components/final/2_Clean';
 import Disassemble from '@/components/final/3_Disassemble';
 import Assemble from '@/components/final/4_Assemble';
 import GameTuto from '@/components/final/GameplayTuto';
-import ProgressBar from '@/components/ui/ProgressBar';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { phaseIndex, setPhaseIndex } = useLevelStore();
+  const { phaseIndex } = useLevelStore();
   const PHASES = ['FindTools', 'Clean', 'Disassemble', 'Assemble'];
+  const [currPhaseIndex, setCurrPhaseIndex] = useState(phaseIndex || 0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showTuto, setShowTuto] = useState(false);
   const [phaseProgress, setPhaseProgress] = useState(0);
+
+  useEffect(() => {
+    setCurrPhaseIndex(phaseIndex);
+  }, [phaseIndex]);
 
   const onPhaseDone = () => {
     setTimeout(() => {
@@ -34,33 +39,25 @@ export default function Sequence() {
   const handleSuccessComplete = () => {
     setShowSuccess(false);
     setShowTuto(true);
-    setPhaseIndex(phaseIndex + 1);
+    setCurrPhaseIndex((prev) => prev + 1);
   };
 
   const updatePhaseProgress = (progress: number) => {
-    console.log('progress in updatePhaseProgress', progress);
     setPhaseProgress(progress);
   };
 
   return (
     <GestureHandlerRootView className="flex size-full flex-1">
       <View className="flex size-full w-[100vw] flex-1">
-        {/* <ProgressBar totalPhases={PHASES.length} phaseProgress={phaseProgress} /> */}
-
-        {phaseIndex === 0 && (
-          <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
+        {!showSuccess && !showTuto && (
+          <ProgressBar 
+            currentPhase={currPhaseIndex} 
+            totalPhases={PHASES.length} 
+            phaseProgress={phaseProgress}
+          />
         )}
-        {phaseIndex === 1 && (
-          <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
-        )}
-        {phaseIndex === 2 && (
-          <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
-        )}
-        {phaseIndex === 3 && (
-          <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
-        )}
-        {/* {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />} */}
-        {currPhaseIndex === 0 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+       {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+        {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {/* {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
         {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />} */}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
