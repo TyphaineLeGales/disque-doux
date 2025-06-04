@@ -56,10 +56,10 @@ export default function Sequence() {
             phaseProgress={phaseProgress}
           />
         )}
-        {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 1 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
-        {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+        {/* {currPhaseIndex === 0 && <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />} */}
+        {currPhaseIndex === 0 && <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+        {/* {currPhaseIndex === 2 && <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />}
+        {currPhaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />} */}
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
         {showTuto && <GameTuto id={id} onDone={onTutoDone} />}
       </View>

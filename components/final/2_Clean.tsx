@@ -1,64 +1,210 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Rive, { Fit, RiveRef } from 'rive-react-native';
-
-import { useFaceSwitcher } from '@/hooks/useFaceSwitcher';
+import Rive, { Fit, RiveRef, RiveEvent } from 'rive-react-native';
+import * as Haptics from 'expo-haptics';
 
 type CleanProps = {
   onDone: Function;
   id: string;
   debug?: boolean;
+  onProgress?: (progress: number) => void;
 };
 
-export default function Clean(props: CleanProps) {
-  const riveRef = useRef<RiveRef>(null);
-  const gesture = Gesture.Manual();
-  const [currentFaceId, setCurrentFaceId] = useState(0);
+type FaceState = {
+  opacity: number;
+  isCleaned: boolean;
+};
+
+const FACE_COUNT = 4;
+const INITIAL_OPACITY = 100;
+const OPACITY_DECREASE_RATE = 5;
+const HAPTIC_INTERVAL = 100;
+const CLEANING_INTERVAL = 200;
+
+const useFaceStates = (faceCount: number) => {
+  const [faceStates, setFaceStates] = useState<FaceState[]>(
+    Array(faceCount).fill({ opacity: INITIAL_OPACITY, isCleaned: false })
+  );
+
+  const updateFaceOpacity = (faceId: number, newOpacity: number) => {
+    setFaceStates(prev => {
+      const newStates = [...prev];
+      newStates[faceId - 1] = {
+        opacity: newOpacity,
+        isCleaned: newOpacity === 0
+      };
+      return newStates;
+    });
+  };
+
+  return { faceStates, updateFaceOpacity };
+};
+
+const useCleaning = (
+  faceStates: FaceState[],
+  currentFaceId: number,
+  updateFaceOpacity: (faceId: number, opacity: number) => void,
+  riveRef: React.RefObject<RiveRef>
+) => {
+  const [isInState, setIsInState] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const opacityInterval = useRef<NodeJS.Timeout>();
+  const hapticsInterval = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    if (riveRef.current) {
-      try {
-        riveRef.current.setInputStateAtPath('FaceId', currentFaceId, 'Object');
-      } catch (error) {
-        console.warn('Failed to initialize Rive:', error);
-      }
+    if (isInState && isDragging) {
+      opacityInterval.current = setInterval(() => {
+        const currentOpacity = faceStates[currentFaceId - 1].opacity;
+        const newOpacity = Math.max(0, currentOpacity - OPACITY_DECREASE_RATE);
+        
+        updateFaceOpacity(currentFaceId, newOpacity);
+        if (riveRef.current) {
+          riveRef.current.setInputState('main', 'Opacity', newOpacity);
+        }
+
+        if (newOpacity === 0) {
+          setIsInState(false);
+        }
+      }, CLEANING_INTERVAL);
+
+      hapticsInterval.current = setInterval(() => {
+        const currentOpacity = faceStates[currentFaceId - 1].opacity;
+        if (currentOpacity > 70) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        } else if (currentOpacity > 30) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        } else if (currentOpacity > 0) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+      }, HAPTIC_INTERVAL);
     }
-  }, [riveRef.current]);
 
-  useFaceSwitcher({
-    riveRef,
-    gesture,
-    currentFaceId,
-    onFaceChange: (faceId) => {
-      setCurrentFaceId(faceId);
-    },
-  });
+    return () => {
+      if (opacityInterval.current) clearInterval(opacityInterval.current);
+      if (hapticsInterval.current) clearInterval(hapticsInterval.current);
+    };
+  }, [isInState, isDragging, currentFaceId, faceStates]);
 
-  const styles = StyleSheet.create({
-    container: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    },
-  });
+  return { isInState, setIsInState, isDragging, setIsDragging };
+};
+
+const useFaceNavigation = (
+  faceStates: FaceState[],
+  riveRef: React.RefObject<RiveRef>
+) => {
+  const [currentFaceId, setCurrentFaceId] = useState(2);
+
+  const navigateToFace = (newFaceId: number) => {
+    setCurrentFaceId(newFaceId);
+    if (riveRef.current) {
+      riveRef.current.setInputState('main', 'FaceId', newFaceId);
+      riveRef.current.setInputState('main', 'Opacity', faceStates[newFaceId - 1].opacity);
+    }
+  };
+
+  const handleIncrement = () => {
+    const newFaceId = currentFaceId === FACE_COUNT ? 1 : currentFaceId + 1;
+    navigateToFace(newFaceId);
+  };
+
+  const handleDecrement = () => {
+    const newFaceId = currentFaceId === 1 ? FACE_COUNT : currentFaceId - 1;
+    navigateToFace(newFaceId);
+  };
+
+  return { currentFaceId, handleIncrement, handleDecrement };
+};
+
+export default function Clean({ debug = false, ...props }: CleanProps) {
+  const riveRef = useRef<RiveRef>(null);
+  const [clientCoords, setClientCoords] = useState({ x: 0, y: 0 });
+  const [riveData, setRiveData] = useState<any>(null);
+  const { faceStates, updateFaceOpacity } = useFaceStates(FACE_COUNT);
+  const { currentFaceId, handleIncrement, handleDecrement } = useFaceNavigation(faceStates, riveRef);
+  const { isInState, setIsInState, isDragging, setIsDragging } = useCleaning(faceStates, currentFaceId, updateFaceOpacity, riveRef);
+
+  const handleEvent = (event: RiveEvent) => {
+    console.log('Rive Event:', {
+      name: event.name,
+      type: event.type,
+      properties: event.properties,
+      instance: event.instance,
+      data: event.data
+    });
+    
+    switch (event.name) {
+      case 'StainEnter':
+        setIsInState(true);
+        break;
+      case 'StainExit':
+        setIsInState(false);
+        break;
+      case 'StartDrag':
+        setIsDragging(true);
+        break;
+      case 'EndDrag':
+        setIsDragging(false);
+        break;
+      case 'Increment':
+        handleIncrement();
+        break;
+      case 'Decrement':
+        handleDecrement();
+        break;
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <GestureDetector gesture={gesture}>
-        <View style={StyleSheet.absoluteFill}>
-          <Rive
-            ref={riveRef}
-            resourceName="clean_2"
-            fit={Fit.Cover}
-            artboardName="Clean"
-            style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
-          />
-          <Text>Current Face: {currentFaceId}</Text>
-        </View>
-      </GestureDetector>
+      <View style={StyleSheet.absoluteFill}>
+        <Rive
+          ref={riveRef}
+          resourceName="nettoyage_17"
+          fit={Fit.Cover}
+          artboardName="Clean"
+          onRiveEventReceived={handleEvent}
+          style={[StyleSheet.absoluteFill, { zIndex: -1 }]}
+        />
+        {debug && (
+          <>
+            <Text>Current Face: {currentFaceId}</Text>
+            <Text>Is In State: {isInState ? 'true' : 'false'}</Text>
+            <Text>Is Dragging: {isDragging ? 'true' : 'false'}</Text>
+            <Text style={{ paddingTop: 200 }}>
+              Face Opacities: {faceStates.map(f => f.opacity).join(', ')}
+            </Text>
+            <Text style={{ paddingTop: 20 }}>
+              Touch Coordinates: X: {clientCoords.x.toFixed(2)}, Y: {clientCoords.y.toFixed(2)}
+            </Text>
+            {riveData && (
+              <>
+                <Text style={{ paddingTop: 20 }}>
+                  Artboard: {JSON.stringify(riveData.artboard)}
+                </Text>
+                <Text style={{ paddingTop: 10 }}>
+                  State Machine: {JSON.stringify(riveData.stateMachine)}
+                </Text>
+                <Text style={{ paddingTop: 10 }}>
+                  Inputs: {JSON.stringify(riveData.inputs)}
+                </Text>
+                <Text style={{ paddingTop: 10 }}>
+                  File: {JSON.stringify(riveData.file)}
+                </Text>
+              </>
+            )}
+          </>
+        )}
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+});
