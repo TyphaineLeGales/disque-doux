@@ -52,16 +52,33 @@ const useCleaning = (
   const [isDragging, setIsDragging] = useState(false);
   const opacityInterval = useRef<NodeJS.Timeout>();
   const hapticsInterval = useRef<NodeJS.Timeout>();
+  const prevCleanedCount = useRef(0);
 
   useEffect(() => {
     const cleanedFaces = faceStates.filter((face) => face.isCleaned).length;
     onProgress(cleanedFaces / FACE_COUNT);
 
+    if (cleanedFaces > prevCleanedCount.current) {
+      if (riveRef.current) {
+        riveRef.current.fireStateAtPath('Animate', 'StarsAnimation');
+        console.log('StarsAnimation triggered');
+      }
+    }
+    prevCleanedCount.current = cleanedFaces;
+
+    if (cleanedFaces > prevCleanedCount.current) {
+      if (riveRef.current) {
+        riveRef.current.fireStateAtPath('Animate', 'StarsAnimation');
+        console.log('StarsAnimation triggered');
+      }
+    }
+    prevCleanedCount.current = cleanedFaces;
+
     const allFacesCleaned = faceStates.every((face) => face.isCleaned);
     if (allFacesCleaned) {
       onDone();
     }
-  }, [faceStates, onDone, onProgress]);
+  }, [faceStates, onDone, onProgress, riveRef]);
 
   useEffect(() => {
     if (isInState && isDragging) {
@@ -148,14 +165,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
   }, []);
 
   const handleEvent = (event: RiveEvent) => {
-    console.log('Rive Event:', {
-      name: event.name,
-      type: event.type,
-      properties: event.properties,
-      instance: event.instance,
-      data: event.data,
-    });
-
+    
     switch (event.name) {
       case 'StainEnter':
         setIsInState(true);
@@ -183,7 +193,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
       <View style={StyleSheet.absoluteFill}>
         <Rive
           ref={riveRef}
-          resourceName="nettoyage_17"
+          resourceName="nettoyage_20"
           fit={Fit.Cover}
           artboardName="Clean"
           onRiveEventReceived={handleEvent}
