@@ -7,7 +7,7 @@ type CleanProps = {
   onDone: Function;
   id: string;
   debug?: boolean;
-  onProgress?: (progress: number) => void;
+  onProgress: (progress: number) => void;
 };
 
 type FaceState = {
@@ -44,12 +44,24 @@ const useCleaning = (
   faceStates: FaceState[],
   currentFaceId: number,
   updateFaceOpacity: (faceId: number, opacity: number) => void,
-  riveRef: React.RefObject<RiveRef>
+  riveRef: React.RefObject<RiveRef>,
+  onDone: Function,
+  onProgress: (progress: number) => void
 ) => {
   const [isInState, setIsInState] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const opacityInterval = useRef<NodeJS.Timeout>();
   const hapticsInterval = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    const cleanedFaces = faceStates.filter((face) => face.isCleaned).length;
+    onProgress(cleanedFaces / FACE_COUNT);
+
+    const allFacesCleaned = faceStates.every((face) => face.isCleaned);
+    if (allFacesCleaned) {
+      onDone();
+    }
+  }, [faceStates, onDone, onProgress]);
 
   useEffect(() => {
     if (isInState && isDragging) {
@@ -112,7 +124,7 @@ const useFaceNavigation = (faceStates: FaceState[], riveRef: React.RefObject<Riv
   return { currentFaceId, handleIncrement, handleDecrement };
 };
 
-export default function Clean({ debug = false, ...props }: CleanProps) {
+export default function Clean({ debug = false, onDone, onProgress, ...props }: CleanProps) {
   const riveRef = useRef<RiveRef>(null);
   const [clientCoords, setClientCoords] = useState({ x: 0, y: 0 });
   const [riveData, setRiveData] = useState<any>(null);
@@ -125,7 +137,9 @@ export default function Clean({ debug = false, ...props }: CleanProps) {
     faceStates,
     currentFaceId,
     updateFaceOpacity,
-    riveRef
+    riveRef,
+    onDone,
+    onProgress
   );
 
   const handleEvent = (event: RiveEvent) => {

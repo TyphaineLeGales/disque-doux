@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -7,23 +7,16 @@ import Success from '@/components/Success';
 import FindTools from '@/components/final/1_FindTools';
 import Clean from '@/components/final/2_Clean';
 import Disassemble from '@/components/final/3_Disassemble';
-import Assemble from '@/components/final/4_Assemble';
-import GameTuto from '@/components/final/GameplayTuto';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { phaseIndex } = useLevelStore();
+  const { phaseIndex, setPhaseIndex } = useLevelStore();
   const PHASES = ['FindTools', 'Clean', 'Disassemble', 'Assemble'];
-  const [currPhaseIndex, setCurrPhaseIndex] = useState(phaseIndex || 0);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const [phaseProgress, setPhaseProgress] = useState(0);
-
-  useEffect(() => {
-    setCurrPhaseIndex(phaseIndex);
-  }, [phaseIndex]);
 
   const onPhaseDone = () => {
     setTimeout(() => {
@@ -33,8 +26,7 @@ export default function Sequence() {
 
   const handleSuccessComplete = () => {
     setShowSuccess(false);
-
-    setCurrPhaseIndex((prev) => prev + 1);
+    setPhaseIndex(phaseIndex + 1);
   };
 
   const updatePhaseProgress = (progress: number) => {
@@ -46,18 +38,18 @@ export default function Sequence() {
       <View className="flex size-full w-[100vw] flex-1">
         {!showSuccess && (
           <ProgressBar
-            currentPhase={currPhaseIndex}
+            currentPhase={phaseIndex}
             totalPhases={PHASES.length}
             phaseProgress={phaseProgress}
           />
         )}
-        {currPhaseIndex === 0 && (
+        {phaseIndex === 0 && (
           <FindTools onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
         )}
-        {currPhaseIndex === 1 && (
+        {phaseIndex === 1 && (
           <Clean onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
         )}
-        {currPhaseIndex === 2 && (
+        {phaseIndex === 2 && (
           <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
         )}
 
