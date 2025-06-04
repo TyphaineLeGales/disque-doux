@@ -38,7 +38,7 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
         artboardName={`success_${phaseIndex + 1}`}
         fit={Fit.Contain}
         autoplay
-        style={{ height: '100%', pointerEvents: 'none' }}
+        style={{ pointerEvents: 'none' }}
         onRiveEventReceived={handleRiveEvent}
       />
     </Pressable>

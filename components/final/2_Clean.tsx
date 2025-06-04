@@ -142,6 +142,11 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
     onProgress
   );
 
+  //DEBUG - CAN BE REMOVED
+  useEffect(() => {
+    setTimeout(onDone, 1000);
+  }, []);
+
   const handleEvent = (event: RiveEvent) => {
     console.log('Rive Event:', {
       name: event.name,

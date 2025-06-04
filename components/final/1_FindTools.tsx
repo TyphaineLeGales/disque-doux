@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { View } from 'react-native';
 import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
 
@@ -10,6 +10,11 @@ type FindToolProps = {
 };
 
 export default function FindTools(props: FindToolProps) {
+  //DEBUG - CAN BE REMOVED
+  useEffect(() => {
+    setTimeout(props.onDone, 1000);
+  }, []);
+
   const { onProgress } = props;
   const riveRef = useRef<RiveRef>(null);
   const toolsFound = useRef(0);

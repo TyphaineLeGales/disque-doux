@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Text, View, Pressable } from 'react-native';
 import Rive, {
   Fit,
@@ -11,6 +11,7 @@ import Rive, {
 } from 'rive-react-native';
 
 import Unscrew from '@/components/rive/final/Unscrew';
+import Wiggle from '@/components/rive/final/Wiggle';
 
 type DisassembleProps = {
   onDone: Function;
@@ -53,9 +54,14 @@ export default function Disassemble(props: DisassembleProps) {
   const currViewIndex = useRef(0);
   //const currViewName = useRef('X'); -> _views[currViewIndex]
   const piecesInInventory = useRef([]);
-  const _VIEWS = ['X', '-Y', '-X', 'Y'];
   const [showUnscrew, setShowUnscrew] = useState(false);
+  const [showWiggle, setShowWiggle] = useState(false);
   const showScrewTuto = useRef(true);
+  const screwsLeft = useRef<number[]>([1, 2, 3, 4]);
+
+  useEffect(() => {
+    console.log(screwsLeft.current);
+  }, [screwsLeft.current]);
 
   const onChangeView = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -83,14 +89,19 @@ export default function Disassemble(props: DisassembleProps) {
     riveRef?.current?.play();
   };
 
+  const onWiggleDone = () => {
+    riveRef.current?.setInputState('State Machine 1', 'showwiggle', false);
+    setShowWiggle(false);
+    riveRef?.current?.play();
+  };
+
+  const onToolDropped = () => {
+    riveRef.current?.setInputStateAtPath('isOpen', false, 'toolLayer /toolbox');
+    riveRef.current?.setInputStateAtPath('screwdriverSelected', false, 'toolLayer ');
+  };
+
   const handleStateChange = (stateMachineName: string, stateName: string) => {
-    console.log('State changed:', { stateMachineName, stateName });
-    if (stateName === 'showunscrew') {
-      riveRef.current?.setInputStateAtPath('isOpen', false, 'toolLayer /toolbox');
-      riveRef.current?.setInputStateAtPath('screwdriverSelected', false, 'toolLayer ');
-      riveRef?.current?.pause();
-      setShowUnscrew(true);
-    }
+    console.log('State changed:', { stateName });
   };
 
   const setInputForAllViews = (stateName: string, value: boolean | number, id: number) => {
@@ -105,6 +116,8 @@ export default function Disassemble(props: DisassembleProps) {
     riveRef.current?.setInputStateAtPath('hide', true, `vis-X${id}`);
     riveRef.current?.setInputStateAtPath('hide', true, `visY${id}`);
     riveRef.current?.setInputStateAtPath('hide', true, `vis-Y${id}`);
+    // remove id from screwsLeft.current
+    screwsLeft.current = screwsLeft.current.filter((screwId) => screwId !== id);
   };
 
   const onPieceInInventory = (id: number) => {
@@ -119,17 +132,26 @@ export default function Disassemble(props: DisassembleProps) {
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
-    console.log('event', event);
+    console.log('event', event.name);
     if (event.name.includes('inInventory')) {
       const pieceId = extractId(event.name);
       pieceId && onPieceInInventory(pieceId);
     }
 
+    if (event.name === 'wiggle' && screwsLeft.current.length === 0) {
+      onToolDropped();
+      setShowWiggle(true);
+    }
+
     if (event.name.includes('screwTarget')) {
       const targetType = extractDirection(event.name)?.toLowerCase();
       const screwId = SCREWTARGETS[currViewIndex.current][targetType];
-      console.log(targetType, _VIEWS[currViewIndex.current], screwId);
-      hideScrew(screwId);
+      onToolDropped();
+      if (screwsLeft.current.includes(screwId)) {
+        hideScrew(screwId);
+        riveRef?.current?.pause();
+        setShowUnscrew(true);
+      }
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   };
@@ -143,7 +165,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble33"
+          resourceName="disassemble38"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
@@ -174,6 +196,9 @@ export default function Disassemble(props: DisassembleProps) {
         </View>
       </View>
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
+      {screwsLeft.current.length === 0 && showWiggle && (
+        <Wiggle onDone={onWiggleDone} showTuto={false} />
+      )}
     </View>
   );
 }

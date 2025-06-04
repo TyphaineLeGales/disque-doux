@@ -9,7 +9,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import Rive, { Fit, RiveGeneralEvent } from 'rive-react-native'; // Adjust to your Rive version
+import Rive, { Fit, RiveGeneralEvent, RiveRef } from 'rive-react-native'; // Adjust to your Rive version
 
 type DisassembleProps = {
   onDone: Function;
@@ -21,8 +21,8 @@ const CENTER = { x: width / 2, y: height / 2 };
 const THRESHOLD = 360 * 3; // e.g., 3 full rotations
 const SPEED = 0.8;
 export default function Unscrew(props: DisassembleProps) {
-  const riveRefTuto = useRef(null);
-  const riveRefGame = useRef(null);
+  const riveRefTuto = useRef<RiveRef>(null);
+  const riveRefGame = useRef<RiveRef>(null);
   const angle = useSharedValue(0); // cumulative angle
   const prevAngle = useSharedValue(0);
   const isDone = useRef(false);
@@ -112,14 +112,13 @@ export default function Unscrew(props: DisassembleProps) {
   );
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
-    console.log('event', event);
     if (event.name === 'showmask') {
       riveRefGame.current?.setInputStateAtPath('showMask', true, 'screw');
     }
     if (event.name === 'hideTuto') {
       riveRefGame.current?.fireState('State Machine 1', 'transitionIn');
       riveRefTuto.current?.fireState('State Machine 1', 'hide');
-      riveRefTuto.current?.pause();
+      // riveRefTuto.current?.pause();
       riveRefGame.current?.setInputStateAtPath('showMask', true, 'screw');
     }
   };
