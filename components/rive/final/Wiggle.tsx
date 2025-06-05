@@ -33,6 +33,10 @@ export default function Wiggle(props: WiggleProps) {
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
     console.log('event', event.name);
+    if (event.name === 'hidetuto') {
+      riveRefTuto.current?.fireState('State Machine 1', 'hide');
+      riveRefGame.current?.setInputState('State Machine 1', 'open', true);
+    }
   };
 
   const panGesture = useMemo(
@@ -61,13 +65,10 @@ export default function Wiggle(props: WiggleProps) {
   const updateRiveState = useCallback(
     (num: number) => {
       if (isDone.current) return;
-      console.log(num, typeof num);
 
       if (num < 100) {
         riveRefGame.current?.setInputState('State Machine 1', 'progress', num); // modulo 100 === 1 turn -> we need to do several turns,
-        console.log('num in first');
       } else {
-        console.log('in last');
         isDone.current = true;
         riveRefGame.current?.fireState('State Machine 1', 'close');
         setTimeout(props.onDone, 500);
@@ -99,18 +100,18 @@ export default function Wiggle(props: WiggleProps) {
             style={{ width: '100%', pointerEvents: 'none' }}
           />
         </View>
-        {/* {props.showTuto && (
-          <View className="absolute top-0 w-full h-full">
+        {props.showTuto && (
+          <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_separe_2"
+              resourceName="separe2"
               artboardName="TutoSepare"
               fit={Fit.Contain}
               onRiveEventReceived={handleRiveEvent}
               style={{ width: '100%', pointerEvents: 'none' }}
             />
           </View>
-        )} */}
+        )}
       </View>
       <GestureDetector gesture={panGesture}>
         <View className="absolute z-50 h-full w-full" />

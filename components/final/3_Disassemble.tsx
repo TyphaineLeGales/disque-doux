@@ -212,7 +212,7 @@ export default function Disassemble(props: DisassembleProps) {
       </View>
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
       {screwsLeft.current.length === 0 && showWiggle && (
-        <Wiggle onDone={onWiggleDone} showTuto={false} />
+        <Wiggle onDone={onWiggleDone} showTuto={wiggleLeft.current === 2} />
       )}
     </View>
   );
