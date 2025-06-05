@@ -42,8 +42,7 @@ export default function Wiggle(props: WiggleProps) {
           lastX.value = e.x;
         })
         .onUpdate((e) => {
-          const dx = e.x - lastX.value;
-
+          const dx = Math.abs(e.x - lastX.value);
           // Adjust scale/sensitivity
           progress.value += dx * 0.2;
 
@@ -62,14 +61,16 @@ export default function Wiggle(props: WiggleProps) {
   const updateRiveState = useCallback(
     (num: number) => {
       if (isDone.current) return;
-      console.log(num);
+      console.log(num, typeof num);
 
       if (num < 100) {
         riveRefGame.current?.setInputState('State Machine 1', 'progress', num); // modulo 100 === 1 turn -> we need to do several turns,
+        console.log('num in first');
       } else {
+        console.log('in last');
         isDone.current = true;
         riveRefGame.current?.fireState('State Machine 1', 'close');
-        // setTimeout(props.onDone, 500);
+        setTimeout(props.onDone, 500);
       }
     },
     [props.onDone]
@@ -78,19 +79,20 @@ export default function Wiggle(props: WiggleProps) {
   useAnimatedReaction(
     () => progress.value,
     (val) => {
-      const clamped = Math.max(0, Math.min(val, 100)); // Clamp to 0–100
+      const scaled = val * 0.25; // 🧠 halve the input
+      const clamped = Math.max(0, Math.min(scaled, 100));
       runOnJS(updateRiveState)(clamped);
     },
     [updateRiveState]
   );
 
   return (
-    <View className="flex h-full w-full flex-1 bg-slate-300">
+    <View className="flex h-full w-full flex-1 bg-slate-50">
       <View className="relative z-30 h-full w-full">
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_separe_4"
+            resourceName="separe2"
             artboardName="GameSepare"
             fit={Fit.Contain}
             onRiveEventReceived={handleRiveEvent}

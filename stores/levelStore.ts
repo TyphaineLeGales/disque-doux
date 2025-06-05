@@ -11,7 +11,7 @@ type LevelStore = {
 export const useLevelStore = create<LevelStore>((set) => ({
   debugMode: true,
   level: 0,
-  phaseIndex: 0,
+  phaseIndex: 2,
   setLevel: (val) => set({ level: val }),
   setPhaseIndex: (index) => {
     set({ phaseIndex: index });

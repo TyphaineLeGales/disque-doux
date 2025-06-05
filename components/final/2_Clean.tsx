@@ -54,6 +54,11 @@ const useCleaning = (
   const hapticsInterval = useRef<NodeJS.Timeout>();
   const prevCleanedCount = useRef(0);
 
+  //DEBUG - CAN BE REMOVED
+  useEffect(() => {
+    setTimeout(onDone, 1000);
+  }, []);
+
   useEffect(() => {
     const cleanedFaces = faceStates.filter((face) => face.isCleaned).length;
     onProgress(cleanedFaces / FACE_COUNT);
@@ -161,7 +166,6 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
   );
 
   const handleEvent = (event: RiveEvent) => {
-    
     switch (event.name) {
       case 'StainEnter':
         setIsInState(true);
@@ -234,4 +238,3 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 });
-

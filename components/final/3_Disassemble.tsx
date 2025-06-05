@@ -58,6 +58,7 @@ export default function Disassemble(props: DisassembleProps) {
   const [showWiggle, setShowWiggle] = useState(false);
   const showScrewTuto = useRef(true);
   const screwsLeft = useRef<number[]>([1, 2, 3, 4]);
+  const wiggleLeft = useRef(2);
 
   useEffect(() => {
     console.log(screwsLeft.current);
@@ -83,16 +84,28 @@ export default function Disassemble(props: DisassembleProps) {
   };
 
   const onScrewingDone = () => {
-    riveRef.current?.setInputState('State Machine 1', 'showunscrew', false);
     showScrewTuto.current = false;
     setShowUnscrew(false);
     riveRef?.current?.play();
   };
 
   const onWiggleDone = () => {
-    riveRef.current?.setInputState('State Machine 1', 'showwiggle', false);
     setShowWiggle(false);
     riveRef?.current?.play();
+
+    if (wiggleLeft.current === 2) {
+      // switch to X vue
+      currViewIndex.current = 0;
+      riveRef.current?.setInputState('State Machine 1', 'views', currViewIndex.current);
+      setInputForAllViews('inInventory', true, 3);
+      riveRef.current?.setInputStateAtPath('full', true, 'inventory_piece_3');
+    } else {
+      setInputForAllViews('inInventory', true, 4);
+      riveRef.current?.setInputStateAtPath('full', true, 'inventory_piece_4');
+      currPieceIndex.current = 1;
+      setInputForAllViews('isDraggable', true, 1);
+    }
+    wiggleLeft.current -= 1;
   };
 
   const onToolDropped = () => {
@@ -140,7 +153,9 @@ export default function Disassemble(props: DisassembleProps) {
 
     if (event.name === 'wiggle' && screwsLeft.current.length === 0) {
       onToolDropped();
-      setShowWiggle(true);
+      if (wiggleLeft.current > 0) {
+        setShowWiggle(true);
+      }
     }
 
     if (event.name.includes('screwTarget')) {
@@ -165,7 +180,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble38"
+          resourceName="disassemble39"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
