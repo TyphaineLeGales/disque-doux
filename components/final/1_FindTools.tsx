@@ -6,7 +6,6 @@ type FindToolProps = {
   onDone: Function;
   id: string;
   debug?: boolean;
-  onProgress: (progress: number) => void;
 };
 
 export default function FindTools(props: FindToolProps) {
@@ -15,7 +14,6 @@ export default function FindTools(props: FindToolProps) {
     setTimeout(props.onDone, 1000);
   }, []);
 
-  const { onProgress } = props;
   const riveRef = useRef<RiveRef>(null);
   const toolsFound = useRef(0);
   const TOTAL_TOOLS = 3;
@@ -29,7 +27,6 @@ export default function FindTools(props: FindToolProps) {
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     if (event.name === 'Drop') {
       toolsFound.current++;
-      onProgress(toolsFound.current / TOTAL_TOOLS);
     }
   };
 
