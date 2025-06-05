@@ -55,9 +55,9 @@ const useCleaning = (
   const prevCleanedCount = useRef(0);
 
   //DEBUG - CAN BE REMOVED
-  useEffect(() => {
-    setTimeout(onDone, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(onDone, 1000);
+  // }, []);
 
   useEffect(() => {
     const cleanedFaces = faceStates.filter((face) => face.isCleaned).length;
