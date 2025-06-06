@@ -125,7 +125,7 @@ const useFaceNavigation = (faceStates: FaceState[], riveRef: React.RefObject<Riv
     if (riveRef.current) {
       riveRef.current.setInputState('main', 'FaceId', newFaceId);
       riveRef.current.setInputState('main', 'Opacity', faceStates[newFaceId - 1].opacity);
-      riveRef.current.fireStateAtPath('GoBack', 'toolbox');
+      // riveRef.current.fireStateAtPath('GoBack', 'toolbox');
     }
   };
 
@@ -189,7 +189,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
       <View style={StyleSheet.absoluteFill}>
         <Rive
           ref={riveRef}
-          resourceName="nettoyage_24"
+          resourceName="nettoyage_26"
           fit={Fit.Cover}
           artboardName="Clean"
           onRiveEventReceived={handleEvent}
