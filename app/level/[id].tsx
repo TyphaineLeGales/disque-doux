@@ -7,6 +7,7 @@ import Success from '@/components/Success';
 import FindTools from '@/components/final/1_FindTools';
 import Clean from '@/components/final/2_Clean';
 import Disassemble from '@/components/final/3_Disassemble';
+import Assemble from '@/components/final/4_Assemble';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useLevelStore } from '@/stores/levelStore';
 
@@ -52,6 +53,7 @@ export default function Sequence() {
         {phaseIndex === 2 && (
           <Disassemble onDone={onPhaseDone} id={id} onProgress={updatePhaseProgress} />
         )}
+        {phaseIndex === 3 && <Assemble onDone={onPhaseDone} id={id} />}
 
         {showSuccess && <Success onAnimationComplete={handleSuccessComplete} />}
       </View>

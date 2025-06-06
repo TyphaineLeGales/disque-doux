@@ -12,6 +12,7 @@ import Rive, {
 
 import Unscrew from '@/components/rive/final/Unscrew';
 import Wiggle from '@/components/rive/final/Wiggle';
+import { useLevelStore } from '@/stores/levelStore';
 
 type DisassembleProps = {
   onDone: Function;
@@ -59,6 +60,7 @@ export default function Disassemble(props: DisassembleProps) {
   const showScrewTuto = useRef(true);
   const screwsLeft = useRef<number[]>([1, 2, 3, 4]);
   const wiggleLeft = useRef(2);
+  const { setHideProgressBar } = useLevelStore();
 
   const onChangeView = (direction: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -92,6 +94,7 @@ export default function Disassemble(props: DisassembleProps) {
     showScrewTuto.current = false;
     setShowUnscrew(false);
     riveRef?.current?.play();
+    setHideProgressBar(false);
   };
 
   const onWiggleDone = () => {
@@ -111,6 +114,7 @@ export default function Disassemble(props: DisassembleProps) {
       setInputForAllViews('isDraggable', true, 1);
     }
     wiggleLeft.current -= 1;
+    setHideProgressBar(false);
   };
 
   const onToolDropped = () => {
@@ -161,6 +165,7 @@ export default function Disassemble(props: DisassembleProps) {
       if (wiggleLeft.current > 0) {
         setShowWiggle(true);
       }
+      setHideProgressBar(true);
     }
 
     if (event.name.includes('screwTarget')) {
@@ -171,6 +176,7 @@ export default function Disassemble(props: DisassembleProps) {
         hideScrew(screwId);
         riveRef?.current?.pause();
         setShowUnscrew(true);
+        setHideProgressBar(true);
       }
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }

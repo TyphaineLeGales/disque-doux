@@ -6,12 +6,16 @@ type LevelStore = {
   phaseIndex: number;
   setLevel: (val: number) => void;
   setPhaseIndex: (index: number) => void;
+  hideProgressBar: boolean;
+  setHideProgressBar: (val: boolean) => void;
 };
 
 export const useLevelStore = create<LevelStore>((set) => ({
   debugMode: true,
+  hideProgressBar: false,
+  setHideProgressBar: (val) => set({ hideProgressBar: val }),
   level: 0,
-  phaseIndex: 0,
+  phaseIndex: 2,
   setLevel: (val) => set({ level: val }),
   setPhaseIndex: (index) => {
     set({ phaseIndex: index });
