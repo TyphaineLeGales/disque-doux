@@ -129,7 +129,7 @@ export default function Unscrew(props: DisassembleProps) {
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_devisse_11"
+            resourceName="pop_up_devisse_13"
             artboardName="Game"
             fit={Fit.Contain}
             onRiveEventReceived={handleRiveEvent}
@@ -140,7 +140,7 @@ export default function Unscrew(props: DisassembleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_devisse_11"
+              resourceName="pop_up_devisse_13"
               artboardName="Tuto"
               fit={Fit.Contain}
               onRiveEventReceived={handleRiveEvent}

@@ -10,9 +10,9 @@ type FindToolProps = {
 
 export default function FindTools(props: FindToolProps) {
   //DEBUG - CAN BE REMOVED
-  useEffect(() => {
-    setTimeout(props.onDone, 1000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(props.onDone, 1000);
+  // }, []);
 
   const riveRef = useRef<RiveRef>(null);
   const toolsFound = useRef(0);

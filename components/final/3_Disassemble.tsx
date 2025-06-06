@@ -12,6 +12,7 @@ import Rive, {
 
 import Unscrew from '@/components/rive/final/Unscrew';
 import Wiggle from '@/components/rive/final/Wiggle';
+import { useLevelStore } from '@/stores/levelStore';
 
 type DisassembleProps = {
   onDone: Function;
@@ -58,17 +59,24 @@ export default function Disassemble(props: DisassembleProps) {
   const [showWiggle, setShowWiggle] = useState(false);
   const showScrewTuto = useRef(true);
   const screwsLeft = useRef<number[]>([1, 2, 3, 4]);
+  const wiggleLeft = useRef(2);
+  const { setHideProgressBar } = useLevelStore();
 
-  useEffect(() => {
-    console.log(screwsLeft.current);
-  }, [screwsLeft.current]);
-
-  const onChangeView = () => {
+  const onChangeView = (direction: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    currViewIndex.current += 1;
-    if (currViewIndex.current === 4) {
-      currViewIndex.current = 0;
+    if (direction === 'right') {
+      currViewIndex.current += 1;
+      if (currViewIndex.current === 4) {
+        currViewIndex.current = 0;
+      }
+    } else {
+      if (currViewIndex.current === 0) {
+        currViewIndex.current = 3;
+      } else {
+        currViewIndex.current -= 1;
+      }
     }
+
     riveRef.current?.setInputState('State Machine 1', 'views', currViewIndex.current);
   };
 
@@ -83,16 +91,30 @@ export default function Disassemble(props: DisassembleProps) {
   };
 
   const onScrewingDone = () => {
-    riveRef.current?.setInputState('State Machine 1', 'showunscrew', false);
     showScrewTuto.current = false;
     setShowUnscrew(false);
     riveRef?.current?.play();
+    setHideProgressBar(false);
   };
 
   const onWiggleDone = () => {
-    riveRef.current?.setInputState('State Machine 1', 'showwiggle', false);
     setShowWiggle(false);
     riveRef?.current?.play();
+
+    if (wiggleLeft.current === 2) {
+      // switch to X vue
+      currViewIndex.current = 0;
+      riveRef.current?.setInputState('State Machine 1', 'views', currViewIndex.current);
+      setInputForAllViews('inInventory', true, 3);
+      riveRef.current?.setInputStateAtPath('full', true, 'inventory_piece_3');
+    } else {
+      setInputForAllViews('inInventory', true, 4);
+      riveRef.current?.setInputStateAtPath('full', true, 'inventory_piece_4');
+      currPieceIndex.current = 1;
+      setInputForAllViews('isDraggable', true, 1);
+    }
+    wiggleLeft.current -= 1;
+    setHideProgressBar(false);
   };
 
   const onToolDropped = () => {
@@ -132,7 +154,7 @@ export default function Disassemble(props: DisassembleProps) {
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
-    console.log('event', event.name);
+    // console.log('event', event.name);
     if (event.name.includes('inInventory')) {
       const pieceId = extractId(event.name);
       pieceId && onPieceInInventory(pieceId);
@@ -140,7 +162,10 @@ export default function Disassemble(props: DisassembleProps) {
 
     if (event.name === 'wiggle' && screwsLeft.current.length === 0) {
       onToolDropped();
-      setShowWiggle(true);
+      if (wiggleLeft.current > 0) {
+        setShowWiggle(true);
+        setHideProgressBar(true);
+      }
     }
 
     if (event.name.includes('screwTarget')) {
@@ -151,8 +176,17 @@ export default function Disassemble(props: DisassembleProps) {
         hideScrew(screwId);
         riveRef?.current?.pause();
         setShowUnscrew(true);
+        setHideProgressBar(true);
       }
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    if (event.name === 'rightBtnPressed') {
+      onChangeView('right');
+    }
+
+    if (event.name === 'leftBtnPress') {
+      onChangeView('left');
     }
   };
   const onChangePiece = () => {
@@ -165,7 +199,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble38"
+          resourceName="disassemble47"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
@@ -190,14 +224,11 @@ export default function Disassemble(props: DisassembleProps) {
           <Pressable onPress={onChangePiece} className="m-6">
             <Text className="font-bold uppercase text-orange-600">change piece</Text>
           </Pressable>
-          <Pressable onPress={onChangeView} className="m-6">
-            <Text className="font-bold uppercase text-orange-600">change view</Text>
-          </Pressable>
         </View>
       </View>
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
       {screwsLeft.current.length === 0 && showWiggle && (
-        <Wiggle onDone={onWiggleDone} showTuto={false} />
+        <Wiggle onDone={onWiggleDone} showTuto={wiggleLeft.current === 2} />
       )}
     </View>
   );
