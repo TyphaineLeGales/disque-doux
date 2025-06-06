@@ -164,8 +164,8 @@ export default function Disassemble(props: DisassembleProps) {
       onToolDropped();
       if (wiggleLeft.current > 0) {
         setShowWiggle(true);
+        setHideProgressBar(true);
       }
-      setHideProgressBar(true);
     }
 
     if (event.name.includes('screwTarget')) {
@@ -199,7 +199,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble44"
+          resourceName="disassemble47"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
