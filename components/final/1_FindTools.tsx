@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { View } from 'react-native';
-import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
+import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent, DataBindBy, AutoBind, BindByName, RNRiveErrorType, RNRiveError, BindByIndex } from 'rive-react-native';
 
 type FindToolProps = {
   onDone: Function;
@@ -15,8 +15,6 @@ export default function FindTools(props: FindToolProps) {
   // }, []);
 
   const riveRef = useRef<RiveRef>(null);
-  const toolsFound = useRef(0);
-  const TOTAL_TOOLS = 3;
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     if (stateName === 'ExitState') {
@@ -24,21 +22,25 @@ export default function FindTools(props: FindToolProps) {
     }
   };
 
-  const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
-    if (event.name === 'Drop') {
-      toolsFound.current++;
-    }
-  };
-
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
-        resourceName="tools_3"
-        artboardName="tools"
-        stateMachineName="Choose Tools"
+        autoplay={true}
+        dataBinding={AutoBind(true)}
+        resourceName="cherche_7"
+        artboardName="Artboard"
+        onError={(riveError: RNRiveError) => {
+          switch (riveError.type) {
+            case RNRiveErrorType.DataBindingError: {
+              console.error(`${riveError.message}`);
+              return;
+            }
+            default:
+              console.error('Unhandled error');
+          }
+        }}
         onStateChanged={handleStateChange}
-        onRiveEventReceived={handleRiveEvent}
         fit={Fit.Contain}
         style={{
           width: '100%',
