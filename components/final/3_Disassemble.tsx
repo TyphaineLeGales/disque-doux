@@ -10,6 +10,8 @@ import Rive, {
   RiveGeneralEvent,
 } from 'rive-react-native';
 
+import ToothbrushCleaning from '../rive/final/ToothbrushCleaning';
+
 import Unscrew from '@/components/rive/final/Unscrew';
 import Wiggle from '@/components/rive/final/Wiggle';
 import { useLevelStore } from '@/stores/levelStore';
@@ -51,16 +53,37 @@ export default function Disassemble(props: DisassembleProps) {
     },
   ];
   const riveRef = useRef<RiveRef>(null);
-  const currPieceIndex = useRef(1);
+  const currPieceIndex = useRef(0);
   const currViewIndex = useRef(0);
-  //const currViewName = useRef('X'); -> _views[currViewIndex]
-  const piecesInInventory = useRef([]);
+  const piecesInInventory = useRef<number[]>([]);
   const [showUnscrew, setShowUnscrew] = useState(false);
   const [showWiggle, setShowWiggle] = useState(false);
+  const [showClean, setShowClean] = useState(false);
+  const cleanPieceId = useRef(9);
   const showScrewTuto = useRef(true);
   const screwsLeft = useRef<number[]>([1, 2, 3, 4]);
   const wiggleLeft = useRef(2);
+  const outsidePieces = useRef([1, 2, 3, 4, 5, 6, 7, 8]);
   const { setHideProgressBar } = useLevelStore();
+
+  const shouldShowCleanGame = () => {
+    if (screwsLeft.current.length !== 0) {
+      return false;
+    }
+
+    if (wiggleLeft.current !== 0) {
+      return false;
+    }
+
+    const allOutsidePiecesAreGone = outsidePieces.current.every((piece: number) =>
+      piecesInInventory.current.includes(piece)
+    );
+
+    if (!allOutsidePiecesAreGone) {
+      return false;
+    }
+    return true;
+  };
 
   const onChangeView = (direction: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -97,6 +120,15 @@ export default function Disassemble(props: DisassembleProps) {
     setHideProgressBar(false);
   };
 
+  const onCleanDone = () => {
+    riveRef?.current?.play();
+    setShowClean(false);
+    setHideProgressBar(false);
+    setInputForAllViews('inInventory', true, cleanPieceId.current);
+    riveRef.current?.setInputStateAtPath('full', true, `inventory_piece_${cleanPieceId}`);
+    piecesInInventory.current = [...piecesInInventory.current, cleanPieceId.current];
+  };
+
   const onWiggleDone = () => {
     setShowWiggle(false);
     riveRef?.current?.play();
@@ -107,9 +139,11 @@ export default function Disassemble(props: DisassembleProps) {
       riveRef.current?.setInputState('State Machine 1', 'views', currViewIndex.current);
       setInputForAllViews('inInventory', true, 3);
       riveRef.current?.setInputStateAtPath('full', true, 'inventory_piece_3');
+      piecesInInventory.current = [...piecesInInventory.current, 3];
     } else {
       setInputForAllViews('inInventory', true, 4);
       riveRef.current?.setInputStateAtPath('full', true, 'inventory_piece_4');
+      piecesInInventory.current = [...piecesInInventory.current, 4];
       currPieceIndex.current = 1;
       setInputForAllViews('isDraggable', true, 1);
     }
@@ -124,6 +158,18 @@ export default function Disassemble(props: DisassembleProps) {
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     console.log('State changed:', { stateName });
+    if (stateName.toLowerCase().includes('clean')) {
+      if (shouldShowCleanGame()) {
+        cleanPieceId.current = parseInt(stateName.match(/\d+/)?.[0] || '', 10);
+      }
+      shouldShowCleanGame() && setShowClean(true);
+      console.log(
+        'shouldShowCleanGame: ',
+        shouldShowCleanGame(),
+        'for piece',
+        cleanPieceId.current
+      );
+    }
   };
 
   const setInputForAllViews = (stateName: string, value: boolean | number, id: number) => {
@@ -148,19 +194,21 @@ export default function Disassemble(props: DisassembleProps) {
     riveRef.current?.setInputStateAtPath('full', true, `inventory_piece_${id}`);
     setInputForAllViews('inInventory', true, id);
     onProgress(piecesInInventory.current.length / TOTAL_PIECES);
+    console.log(piecesInInventory.current);
     if (piecesInInventory.current.length === TOTAL_PIECES) {
       props.onDone();
     }
   };
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
-    // console.log('event', event.name);
+    console.log('event', event.name);
     if (event.name.includes('inInventory')) {
       const pieceId = extractId(event.name);
       pieceId && onPieceInInventory(pieceId);
     }
 
     if (event.name === 'wiggle' && screwsLeft.current.length === 0) {
+      console.log('wiggle');
       onToolDropped();
       if (wiggleLeft.current > 0) {
         setShowWiggle(true);
@@ -169,6 +217,7 @@ export default function Disassemble(props: DisassembleProps) {
     }
 
     if (event.name.includes('screwTarget')) {
+      console.log('in screw target');
       const targetType = extractDirection(event.name)?.toLowerCase();
       const screwId = SCREWTARGETS[currViewIndex.current][targetType];
       onToolDropped();
@@ -199,7 +248,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble47"
+          resourceName="disassemble54"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
@@ -229,6 +278,9 @@ export default function Disassemble(props: DisassembleProps) {
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
       {screwsLeft.current.length === 0 && showWiggle && (
         <Wiggle onDone={onWiggleDone} showTuto={wiggleLeft.current === 2} />
+      )}
+      {showClean && (
+        <ToothbrushCleaning onDone={onCleanDone} showTuto={false} pieceId={cleanPieceId.current} />
       )}
     </View>
   );

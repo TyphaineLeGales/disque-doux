@@ -142,7 +142,7 @@ export default function Unscrew(props: DisassembleProps) {
               ref={riveRefTuto}
               resourceName="pop_up_devisse_13"
               artboardName="Tuto"
-              fit={Fit.Contain}
+              fit={Fit.Cover}
               onRiveEventReceived={handleRiveEvent}
               style={{ width: '100%', pointerEvents: 'none' }}
             />

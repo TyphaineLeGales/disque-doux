@@ -18,7 +18,7 @@ export default function Assemble(props: AssembleProps) {
   return (
     <Rive
       ref={riveComponentRef}
-      resourceName="assembleMotion"
+      resourceName="assemble_motion"
       fit={Fit.Contain}
       style={{ pointerEvents: 'none' }}
     />
