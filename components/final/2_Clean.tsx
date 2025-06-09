@@ -214,7 +214,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
       <View style={StyleSheet.absoluteFill}>
         <Rive
           ref={riveRef}
-          resourceName="nettoyage_29"
+          resourceName="nettoyage_31"
           fit={Fit.Cover}
           artboardName="Clean"
           onRiveEventReceived={handleEvent}
