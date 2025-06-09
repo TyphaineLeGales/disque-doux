@@ -95,7 +95,7 @@ export default function Wiggle(props: WiggleProps) {
             ref={riveRefGame}
             resourceName="separe2"
             artboardName="GameSepare"
-            fit={Fit.Contain}
+            fit={Fit.Cover}
             onRiveEventReceived={handleRiveEvent}
             style={{ width: '100%', pointerEvents: 'none' }}
           />
@@ -106,7 +106,7 @@ export default function Wiggle(props: WiggleProps) {
               ref={riveRefTuto}
               resourceName="separe2"
               artboardName="TutoSepare"
-              fit={Fit.Contain}
+              fit={Fit.Cover}
               onRiveEventReceived={handleRiveEvent}
               style={{ width: '100%', pointerEvents: 'none' }}
             />

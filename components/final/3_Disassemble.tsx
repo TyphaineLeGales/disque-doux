@@ -121,12 +121,11 @@ export default function Disassemble(props: DisassembleProps) {
   };
 
   const onCleanDone = () => {
+    setHideProgressBar(false);
     riveRef?.current?.play();
     setShowClean(false);
-    setHideProgressBar(false);
-    setInputForAllViews('inInventory', true, cleanPieceId.current);
-    riveRef.current?.setInputStateAtPath('full', true, `inventory_piece_${cleanPieceId}`);
-    piecesInInventory.current = [...piecesInInventory.current, cleanPieceId.current];
+
+    onPieceInInventory(cleanPieceId.current);
   };
 
   const onWiggleDone = () => {
@@ -161,14 +160,10 @@ export default function Disassemble(props: DisassembleProps) {
     if (stateName.toLowerCase().includes('clean')) {
       if (shouldShowCleanGame()) {
         cleanPieceId.current = parseInt(stateName.match(/\d+/)?.[0] || '', 10);
+        console.log(stateName);
+        setHideProgressBar(true);
+        setShowClean(true);
       }
-      shouldShowCleanGame() && setShowClean(true);
-      console.log(
-        'shouldShowCleanGame: ',
-        shouldShowCleanGame(),
-        'for piece',
-        cleanPieceId.current
-      );
     }
   };
 
@@ -222,10 +217,10 @@ export default function Disassemble(props: DisassembleProps) {
       const screwId = SCREWTARGETS[currViewIndex.current][targetType];
       onToolDropped();
       if (screwsLeft.current.includes(screwId)) {
-        hideScrew(screwId);
         riveRef?.current?.pause();
         setShowUnscrew(true);
         setHideProgressBar(true);
+        setTimeout(() => hideScrew(screwId), 1000);
       }
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
