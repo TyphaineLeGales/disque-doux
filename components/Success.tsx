@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { useRef } from 'react';
-import { Pressable } from 'react-native';
+import { View } from 'react-native';
 import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent } from 'rive-react-native';
 
 import { useLevelStore } from '@/stores/levelStore';
@@ -12,35 +12,29 @@ type SuccessProps = {
 export default function Success({ onAnimationComplete }: SuccessProps) {
   const riveComponentRef = useRef<RiveRef>(null);
   const { phaseIndex } = useLevelStore();
-  const animationIsDone = useRef(false);
 
-  const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
-    if (event.name === 'showArrow') {
-      animationIsDone.current = true;
-      riveComponentRef.current?.setInputStateAtPath('ShowArrow', true, 'ArrowNext');
+  const handleStateChange = (stateMachineName: string, stateName: string) => {
+    if (stateName === 'ExitState') {
+      onAnimationComplete();
     }
   };
 
-  const handlePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (!animationIsDone.current) return;
-    onAnimationComplete();
+  const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
+    if (event.name === 'Pressed') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
   };
 
   return (
-    <Pressable
-      onPress={handlePress}
-      className="absolute bottom-0 left-0 right-0 top-0"
-      style={{ zIndex: 10 }}>
+    <View className="absolute bottom-0 left-0 right-0 top-0">
       <Rive
         ref={riveComponentRef}
-        resourceName="successscreens_3"
-        artboardName={`success_${phaseIndex + 1}`}
+        resourceName="successscreens_16"
+        artboardName={`success_${phaseIndex + 1} MAIN`}
         fit={Fit.Cover}
         autoplay
-        style={{ pointerEvents: 'none' }}
+        onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
-      />
-    </Pressable>
+      /></View>
   );
 }
