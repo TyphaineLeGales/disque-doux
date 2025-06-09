@@ -35,17 +35,6 @@ export default function Sequence() {
     setPhaseProgress(progress);
   };
 
-  useEffect(() => {
-    // await Audio.setAudioModeAsync({
-    //   allowsRecordingIOS: false,
-    //   staysActiveInBackground: true,
-    //   interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-    //   playsInSilentModeIOS: true,
-    //   shouldDuckAndroid: false,
-    //   interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-    //   playThroughEarpieceAndroid: false,
-    // });
-  }, []);
   useBackgroundMusic();
 
   return (

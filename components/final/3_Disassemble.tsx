@@ -232,6 +232,15 @@ export default function Disassemble(props: DisassembleProps) {
     if (event.name === 'leftBtnPress') {
       onChangeView('left');
     }
+
+    if (event.name === '1_inInventory') {
+      setInputForAllViews('isDraggable', true, 2);
+    }
+
+    if (event.name === '2_inInventory ') {
+      setInputForAllViews('isDraggable', true, 5);
+      setInputForAllViews('isDraggable', true, 6);
+    }
   };
   const onChangePiece = () => {
     setInputForAllViews('isDraggable', true, currPieceIndex.current);
@@ -243,7 +252,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble54"
+          resourceName="disassemble55"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
