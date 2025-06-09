@@ -36,7 +36,7 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
         ref={riveComponentRef}
         resourceName="successscreens_3"
         artboardName={`success_${phaseIndex + 1}`}
-        fit={Fit.Contain}
+        fit={Fit.Cover}
         autoplay
         style={{ pointerEvents: 'none' }}
         onRiveEventReceived={handleRiveEvent}

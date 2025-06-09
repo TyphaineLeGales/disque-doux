@@ -48,7 +48,7 @@ const useCleaning = (
   onDone: Function,
   onProgress: (progress: number) => void
 ) => {
-  const [isInState, setIsInState] = useState(false);
+  const [isInStain, setIsInStain] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const opacityInterval = useRef<NodeJS.Timeout>();
   const hapticsInterval = useRef<NodeJS.Timeout>();
@@ -86,7 +86,7 @@ const useCleaning = (
   }, [faceStates, onDone, onProgress, riveRef]);
 
   useEffect(() => {
-    if (isInState && isDragging) {
+    if (isInStain && isDragging) {
       opacityInterval.current = setInterval(() => {
         const currentOpacity = faceStates[currentFaceId - 1].opacity;
         const newOpacity = Math.max(0, currentOpacity - OPACITY_DECREASE_RATE);
@@ -97,7 +97,7 @@ const useCleaning = (
         }
 
         if (newOpacity === 0) {
-          setIsInState(false);
+          setIsInStain(false);
         }
       }, CLEANING_INTERVAL);
 
@@ -117,9 +117,9 @@ const useCleaning = (
       if (opacityInterval.current) clearInterval(opacityInterval.current);
       if (hapticsInterval.current) clearInterval(hapticsInterval.current);
     };
-  }, [isInState, isDragging, currentFaceId, faceStates]);
+  }, [isInStain, isDragging, currentFaceId, faceStates]);
 
-  return { isInState, setIsInState, isDragging, setIsDragging };
+  return { isInStain, setIsInStain, isDragging, setIsDragging };
 };
 
 const useFaceNavigation = (faceStates: FaceState[], riveRef: React.RefObject<RiveRef>) => {
@@ -156,7 +156,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
     faceStates,
     riveRef
   );
-  const { isInState, setIsInState, isDragging, setIsDragging } = useCleaning(
+  const { isInStain, setIsInStain, isDragging, setIsDragging } = useCleaning(
     faceStates,
     currentFaceId,
     updateFaceOpacity,
@@ -164,17 +164,19 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
     onDone,
     onProgress
   );
+  const [hasDragged, setHasDragged] = useState(false);
 
   const handleEvent = (event: RiveEvent) => {
     switch (event.name) {
       case 'StainEnter':
-        setIsInState(true);
+        setIsInStain(true);
         break;
       case 'StainExit':
-        setIsInState(false);
+        setIsInStain(false);
         break;
       case 'StartDrag':
         setIsDragging(true);
+        if (!hasDragged) setHasDragged(true);
         break;
       case 'EndDrag':
         setIsDragging(false);
@@ -188,12 +190,31 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!hasDragged && riveRef.current) {
+        riveRef.current.setInputStateAtPath('isOpen', false, 'toolbox');
+        setTimeout(() => {
+          riveRef.current?.fireStateAtPath('Animate', 'TutoToolBoxChiffon');
+        }, 1000);
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [hasDragged, riveRef]);
+
+  useEffect(() => {
+    if (isInStain && isDragging && riveRef.current) {
+      riveRef.current.setInputStateAtPath('isOpen', false, 'toolbox');
+    }
+  }, [isInStain, isDragging, riveRef]);
+
   return (
     <View style={styles.container}>
       <View style={StyleSheet.absoluteFill}>
         <Rive
           ref={riveRef}
-          resourceName="nettoyage_28"
+          resourceName="nettoyage_29"
           fit={Fit.Cover}
           artboardName="Clean"
           onRiveEventReceived={handleEvent}
@@ -202,7 +223,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
         {debug && (
           <>
             <Text>Current Face: {currentFaceId}</Text>
-            <Text>Is In State: {isInState ? 'true' : 'false'}</Text>
+            <Text>Is In State: {isInStain ? 'true' : 'false'}</Text>
             <Text>Is Dragging: {isDragging ? 'true' : 'false'}</Text>
             <Text style={{ paddingTop: 200 }}>
               Face Opacities: {faceStates.map((f) => f.opacity).join(', ')}
