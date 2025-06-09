@@ -1,30 +1,42 @@
 import { Audio } from 'expo-av';
 import { useEffect, useRef } from 'react';
 
+const BACKGROUND_MUSIC = require('../assets/music/themeMusic.mp3');
+
 export function useBackgroundMusic() {
   const soundRef = useRef<Audio.Sound | null>(null);
-  const BACKGROUND_MUSIC = require('../assets/music/themeMusic.mp3');
 
   useEffect(() => {
     let isMounted = true;
 
-    const playMusic = async () => {
+    const startMusic = async () => {
+      console.log(Audio);
       try {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          staysActiveInBackground: true,
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: false,
+          playThroughEarpieceAndroid: false,
+          interruptionModeIOS: 0, //MIX_WITH_OTHERS
+        });
+
         const { sound } = await Audio.Sound.createAsync(BACKGROUND_MUSIC, {
           isLooping: true,
+          volume: 0.025,
           shouldPlay: true,
-          volume: 0.5,
         });
+
         if (isMounted) {
           soundRef.current = sound;
           await sound.playAsync();
         }
-      } catch (error) {
-        console.error('Error loading background music:', error);
+      } catch (e) {
+        console.error('Error loading background music:', e);
       }
     };
 
-    playMusic();
+    startMusic();
 
     return () => {
       isMounted = false;

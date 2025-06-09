@@ -1,39 +1,26 @@
-import '../global.css';
-
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
+import { Pressable } from 'react-native';
+import Rive, { Fit, RiveRef } from 'rive-react-native';
 
-import { LoadingScreen } from '@/components/LoadingScreen';
-import { useUserStore } from '@/stores/userStore';
-import 'react-native-reanimated';
-
-export default function Home() {
+export default function StartScreen() {
+  const riveComponentRef = useRef<RiveRef>(null);
   const router = useRouter();
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const loadingSpeed = useRef(2);
-  const { isFirstTime } = useUserStore();
-  const timer = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    console.log('Current isFirstTime state:', isFirstTime);
-  }, [isFirstTime]);
+  const onStart = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push('/narration/1');
+  };
 
-  useEffect(() => {
-    if (loadingProgress < 1) {
-      timer.current = setTimeout(
-        () => setLoadingProgress(loadingProgress + 0.5 * loadingSpeed.current),
-        1500
-      );
-    } else {
-      setTimeout(() => {
-        router.replace('/start');
-      }, 100);
-    }
-
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [loadingProgress, isFirstTime]);
-
-  return <LoadingScreen progressValue={loadingProgress} />;
+  return (
+    <Pressable className="size-full" onPress={onStart}>
+      <Rive
+        ref={riveComponentRef}
+        resourceName="start_final_2"
+        fit={Fit.Contain}
+        style={{ pointerEvents: 'none' }}
+      />
+    </Pressable>
+  );
 }

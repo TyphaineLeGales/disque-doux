@@ -8,26 +8,22 @@ module.exports = {
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
-  assetBundlePatterns: [
-    '**/*'
-  ],
+  assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.amandine.diskDo'
+    bundleIdentifier: 'com.amandine.diskDo',
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#ffffff'
+      foregroundImage: './assets/icon.png',
+      backgroundColor: '#ffffff',
     },
-    package: 'com.amandine.diskDo'
+    package: 'com.amandine.diskDo',
   },
   web: {
-    favicon: './assets/favicon.png'
+    favicon: './assets/favicon.png',
   },
-  plugins: [
-    'expo-build-properties'
-  ]
-}; 
+  plugins: ['expo-build-properties'],
+};

@@ -1,16 +1,10 @@
 import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import { Dimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-  withDecay,
-  useSharedValue,
-  useAnimatedReaction,
-  runOnJS,
-  useAnimatedRef,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import { withDecay, useSharedValue, useAnimatedReaction, runOnJS } from 'react-native-reanimated';
 import Rive, { Fit, RiveGeneralEvent, RiveRef } from 'rive-react-native'; // Adjust to your Rive version
 
+import { useInteractionSound } from '@/hooks/useInteractionSound';
 type DisassembleProps = {
   onDone: Function;
   showTuto: boolean;
@@ -25,7 +19,9 @@ export default function Unscrew(props: DisassembleProps) {
   const riveRefGame = useRef<RiveRef>(null);
   const angle = useSharedValue(0); // cumulative angle
   const prevAngle = useSharedValue(0);
+  const progress = useSharedValue(0);
   const isDone = useRef(false);
+  useInteractionSound(progress);
 
   useEffect(() => {
     riveRefGame.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
@@ -106,6 +102,7 @@ export default function Unscrew(props: DisassembleProps) {
     () => angle.value,
     (data) => {
       const scaledProgress = data * SPEED; // convert angle (deg) to progress
+      progress.value = scaledProgress;
       runOnJS(updateRiveState)(scaledProgress);
     },
     [updateRiveState]
@@ -129,7 +126,7 @@ export default function Unscrew(props: DisassembleProps) {
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_devisse_13"
+            resourceName="pop_up_devisse_14"
             artboardName="Game"
             fit={Fit.Cover}
             onRiveEventReceived={handleRiveEvent}
@@ -140,7 +137,7 @@ export default function Unscrew(props: DisassembleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_devisse_13"
+              resourceName="pop_up_devisse_14"
               artboardName="Tuto"
               fit={Fit.Cover}
               onRiveEventReceived={handleRiveEvent}
