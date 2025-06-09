@@ -247,7 +247,7 @@ export default function Disassemble(props: DisassembleProps) {
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
-          fit={Fit.Contain}
+          fit={Fit.Cover}
           style={{
             width: '100%',
           }}

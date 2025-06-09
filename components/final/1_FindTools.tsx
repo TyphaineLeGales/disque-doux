@@ -28,7 +28,7 @@ export default function FindTools(props: FindToolProps) {
         ref={riveRef}
         autoplay={true}
         dataBinding={AutoBind(true)}
-        resourceName="cherche_7"
+        resourceName="cherche_12"
         artboardName="Artboard"
         onError={(riveError: RNRiveError) => {
           switch (riveError.type) {
@@ -41,7 +41,7 @@ export default function FindTools(props: FindToolProps) {
           }
         }}
         onStateChanged={handleStateChange}
-        fit={Fit.Contain}
+        fit={Fit.Cover}
         style={{
           width: '100%',
           height: '100%',

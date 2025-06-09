@@ -120,7 +120,7 @@ export const ProgressBar = ({ currentPhase, totalPhases, phaseProgress }: Progre
       className={`absolute left-0 right-0 top-0 z-10 flex-row items-center justify-center px-4 ${
         hideProgressBar ? 'opacity-0' : ''
       }`}
-      style={{ paddingTop: insets.top }}>
+      style={{ paddingTop: insets.top + 16 }}>
       <View className="flex-row items-center justify-center">
         {/* Ronds des niveaux */}
         {Array.from({ length: totalPhases }).map((_, index) => (
@@ -131,15 +131,15 @@ export const ProgressBar = ({ currentPhase, totalPhases, phaseProgress }: Progre
               </View>
             ) : (
               <View
-                className="z-50 h-9 w-9 rounded-full"
+                className="z-50 h-7 w-7 rounded-full"
                 style={{ backgroundColor: COLORS.background }}
               />
             )}
             {/* Affichage du trait sauf après le dernier niveau */}
             {index < totalPhases - 1 && (
-              <View className="relative -ml-1 -mr-1 flex h-[46px] w-[80px] items-center justify-center">
+              <View className="relative -ml-1 -mr-1 flex h-[46px] w-[69px] items-center justify-center">
                 <View
-                  className="z-0 h-2.5 w-full justify-center"
+                  className="z-0 h-3 w-full justify-center"
                   style={{ backgroundColor: COLORS.background }}>
                   <Animated.View
                     className="z-0 h-1.5"
