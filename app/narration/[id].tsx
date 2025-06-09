@@ -14,10 +14,11 @@ export default function Sequence() {
   const riveComponentRef = useRef<RiveRef>(null);
 
   return (
-    <Pressable className="size-full bg-[#FFE8E0]" onPress={onNext}>
+    <Pressable className="size-full" onPress={onNext}>
       <Rive
         ref={riveComponentRef}
-        resourceName="narration_1_2"
+        resourceName="start_final_2"
+        artboardName="Narration"
         fit={Fit.Cover}
         style={{ pointerEvents: 'none' }}
       />

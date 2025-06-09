@@ -18,6 +18,7 @@ export default function StartScreen() {
       <Rive
         ref={riveComponentRef}
         resourceName="start_final_2"
+        artboardName="main"
         fit={Fit.Contain}
         style={{ pointerEvents: 'none' }}
       />
