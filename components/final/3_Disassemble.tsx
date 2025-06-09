@@ -273,11 +273,11 @@ export default function Disassemble(props: DisassembleProps) {
           }}
         />
 
-        <View className="h-1/10 w-1/3items-start absolute bottom-[100px] z-10 m-6 flex justify-end">
+        {/* <View className="h-1/10 w-1/3items-start absolute bottom-[100px] z-10 m-6 flex justify-end">
           <Pressable onPress={onChangePiece} className="m-6">
-            <Text className="font-bold uppercase text-orange-600">change piece</Text>
+            <Text className="font-bold text-orange-600 uppercase">change piece</Text>
           </Pressable>
-        </View>
+        </View> */}
       </View>
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
       {screwsLeft.current.length === 0 && showWiggle && (
