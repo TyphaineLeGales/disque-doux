@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -9,6 +9,7 @@ import Clean from '@/components/final/2_Clean';
 import Disassemble from '@/components/final/3_Disassemble';
 import Assemble from '@/components/final/4_Assemble';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { useBackgroundMusic } from '@/hooks/useBackgroundMusic';
 import { useLevelStore } from '@/stores/levelStore';
 
 export default function Sequence() {
@@ -33,6 +34,19 @@ export default function Sequence() {
   const updatePhaseProgress = (progress: number) => {
     setPhaseProgress(progress);
   };
+
+  useEffect(() => {
+    // await Audio.setAudioModeAsync({
+    //   allowsRecordingIOS: false,
+    //   staysActiveInBackground: true,
+    //   interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+    //   playsInSilentModeIOS: true,
+    //   shouldDuckAndroid: false,
+    //   interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+    //   playThroughEarpieceAndroid: false,
+    // });
+  }, []);
+  useBackgroundMusic();
 
   return (
     <GestureHandlerRootView className="flex size-full flex-1">
