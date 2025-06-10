@@ -17,7 +17,7 @@
         "simulator": true
       }
     },
-    "testandroid": {
+    "preview": {
       "android": {
         "buildType": "apk"
       }, 
