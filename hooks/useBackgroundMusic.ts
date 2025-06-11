@@ -10,6 +10,7 @@ export function useBackgroundMusic() {
     let isMounted = true;
 
     const startMusic = async () => {
+      console.log(Audio);
       try {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
