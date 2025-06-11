@@ -256,7 +256,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble59"
+          resourceName="disassemble61"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}

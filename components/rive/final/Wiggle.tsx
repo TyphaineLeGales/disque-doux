@@ -69,7 +69,7 @@ export default function Wiggle(props: WiggleProps) {
       } else {
         isDone.current = true;
         riveRefGame.current?.fireState('State Machine 1', 'close');
-        setTimeout(props.onDone, 500);
+        setTimeout(props.onDone, 1500);
       }
     },
     [props.onDone]
@@ -86,12 +86,12 @@ export default function Wiggle(props: WiggleProps) {
   );
 
   return (
-    <View className="flex h-full w-full flex-1 bg-slate-50">
+    <View className="flex h-full w-full flex-1 ">
       <View className="relative z-30 h-full w-full">
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_separe_5"
+            resourceName="pop_up_separe_7"
             artboardName="GameSepare"
             fit={Fit.Cover}
             onRiveEventReceived={handleRiveEvent}
@@ -102,7 +102,7 @@ export default function Wiggle(props: WiggleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_separe_5"
+              resourceName="pop_up_separe_7"
               artboardName="TutoSepare"
               fit={Fit.Cover}
               onRiveEventReceived={handleRiveEvent}
