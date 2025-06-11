@@ -10,8 +10,8 @@ import Rive, {
   RiveGeneralEvent,
 } from 'rive-react-native';
 
-import ToothbrushCleaning from '../rive/final/ToothbrushCleaning';
-
+import ToothbrushCleaning from '@/components/rive/final/ToothbrushCleaning';
+import TutoDragDrop from '@/components/rive/final/TutoDragDrop';
 import Unscrew from '@/components/rive/final/Unscrew';
 import Wiggle from '@/components/rive/final/Wiggle';
 import { useLevelStore } from '@/stores/levelStore';
@@ -249,6 +249,8 @@ export default function Disassemble(props: DisassembleProps) {
     currPieceIndex.current += 1;
   };
 
+  // if piecesInInventory.current.length === 0 au bout de 3s show tuto
+
   return (
     <View className="flex h-full w-full flex-1 bg-[#FEF7E1]">
       <View className="absolute h-full w-full flex-1">
@@ -282,9 +284,6 @@ export default function Disassemble(props: DisassembleProps) {
         </View> */}
       </View>
 
-      {/*
-      - tuto drag and drop : si au bout de 3s l'utilisateurice n'a drag & drop aucune pièce -> tuto
-     */}
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
       {screwsLeft.current.length === 0 && showWiggle && (
         <Wiggle onDone={onWiggleDone} showTuto={wiggleLeft.current === 2} />
@@ -296,6 +295,7 @@ export default function Disassemble(props: DisassembleProps) {
           pieceId={cleanPieceId.current}
         />
       )}
+      <TutoDragDrop piecesInInventory={piecesInInventory.current} />
     </View>
   );
 }
