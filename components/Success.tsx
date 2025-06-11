@@ -29,7 +29,7 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
     <View className="absolute bottom-0 left-0 right-0 top-0">
       <Rive
         ref={riveComponentRef}
-        resourceName="successscreens_19"
+        resourceName="successscreens_21"
         artboardName={`success_${phaseIndex + 1} MAIN`}
         fit={Fit.Cover}
         autoplay

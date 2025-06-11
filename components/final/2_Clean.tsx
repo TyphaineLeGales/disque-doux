@@ -66,7 +66,6 @@ const useCleaning = (
     if (cleanedFaces > prevCleanedCount.current) {
       if (riveRef.current) {
         riveRef.current.fireStateAtPath('Animate', 'StarsAnimation');
-        console.log('StarsAnimation triggered');
       }
     }
     prevCleanedCount.current = cleanedFaces;
@@ -74,7 +73,6 @@ const useCleaning = (
     if (cleanedFaces > prevCleanedCount.current) {
       if (riveRef.current) {
         riveRef.current.fireStateAtPath('Animate', 'StarsAnimation');
-        console.log('StarsAnimation triggered');
       }
     }
     prevCleanedCount.current = cleanedFaces;
@@ -122,15 +120,30 @@ const useCleaning = (
   return { isInStain, setIsInStain, isDragging, setIsDragging };
 };
 
-const useFaceNavigation = (faceStates: FaceState[], riveRef: React.RefObject<RiveRef>) => {
+export default function Clean({ debug = false, onDone, onProgress, ...props }: CleanProps) {
+  const riveRef = useRef<RiveRef>(null);
+  const [clientCoords, setClientCoords] = useState({ x: 0, y: 0 });
+  const [riveData, setRiveData] = useState<any>(null);
+  const { faceStates, updateFaceOpacity } = useFaceStates(FACE_COUNT);
   const [currentFaceId, setCurrentFaceId] = useState(2);
+  const { isInStain, setIsInStain, isDragging, setIsDragging } = useCleaning(
+    faceStates,
+    currentFaceId,
+    updateFaceOpacity,
+    riveRef,
+    onDone,
+    onProgress
+  );
+  const [hasDragged, setHasDragged] = useState(false);
 
   const navigateToFace = (newFaceId: number) => {
     setCurrentFaceId(newFaceId);
+    setIsInStain(false);
+    setIsDragging(false);
     if (riveRef.current) {
       riveRef.current.setInputState('main', 'FaceId', newFaceId);
       riveRef.current.setInputState('main', 'Opacity', faceStates[newFaceId - 1].opacity);
-      // riveRef.current.fireStateAtPath('GoBack', 'toolbox');
+      riveRef.current.fireState('main', 'Arrow');
     }
   };
 
@@ -143,28 +156,6 @@ const useFaceNavigation = (faceStates: FaceState[], riveRef: React.RefObject<Riv
     const newFaceId = currentFaceId === 1 ? FACE_COUNT : currentFaceId - 1;
     navigateToFace(newFaceId);
   };
-
-  return { currentFaceId, handleIncrement, handleDecrement };
-};
-
-export default function Clean({ debug = false, onDone, onProgress, ...props }: CleanProps) {
-  const riveRef = useRef<RiveRef>(null);
-  const [clientCoords, setClientCoords] = useState({ x: 0, y: 0 });
-  const [riveData, setRiveData] = useState<any>(null);
-  const { faceStates, updateFaceOpacity } = useFaceStates(FACE_COUNT);
-  const { currentFaceId, handleIncrement, handleDecrement } = useFaceNavigation(
-    faceStates,
-    riveRef
-  );
-  const { isInStain, setIsInStain, isDragging, setIsDragging } = useCleaning(
-    faceStates,
-    currentFaceId,
-    updateFaceOpacity,
-    riveRef,
-    onDone,
-    onProgress
-  );
-  const [hasDragged, setHasDragged] = useState(false);
 
   const handleEvent = (event: RiveEvent) => {
     switch (event.name) {
@@ -202,19 +193,57 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
 
     return () => clearTimeout(timer);
   }, [hasDragged, riveRef]);
+  
+  useEffect(() => {
+    setIsInStain(false);
+    setIsDragging(false);
+  }, [riveRef]);
 
   useEffect(() => {
-    if (isInStain && isDragging && riveRef.current) {
+    if(!riveRef.current) return 
+    if(faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) return
+
+    if(isInStain && isDragging) {
       riveRef.current.setInputStateAtPath('isOpen', false, 'toolbox');
+      riveRef.current.fireState('main', 'NettoyageIn');
+      riveRef.current.setInputState('main', 'NettoyageMiddle', true);
     }
-  }, [isInStain, isDragging, riveRef]);
+  }, [isInStain, isDragging, riveRef, currentFaceId, faceStates]);
+
+  useEffect(() => {
+    if(!riveRef.current) return
+    if(!hasDragged) return
+    if(faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) {
+      riveRef.current.setInputState('main', 'NettoyageMiddle', false);
+      return;
+    }
+
+    if(!isDragging && isInStain) {
+      riveRef.current.fireState('main', 'NettoyageOut');
+      riveRef.current.setInputState('main', 'NettoyageMiddle', false);
+    } 
+  }, [isDragging, currentFaceId, faceStates]);
+
+  useEffect(() => {
+    if(!riveRef.current) return
+    if(!hasDragged) return
+    if(faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) {
+      riveRef.current.setInputState('main', 'NettoyageMiddle', false);
+      return;
+    }
+
+    if(!isInStain) {
+      riveRef.current.fireState('main', 'NettoyageOut');
+      riveRef.current.setInputState('main', 'NettoyageMiddle', false);
+    } 
+  }, [isInStain, currentFaceId, faceStates]);
 
   return (
     <View style={styles.container}>
       <View style={StyleSheet.absoluteFill}>
         <Rive
           ref={riveRef}
-          resourceName="nettoyage_31"
+          resourceName="nettoyage_35"
           fit={Fit.Cover}
           artboardName="Clean"
           onRiveEventReceived={handleEvent}
