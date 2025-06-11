@@ -12,6 +12,7 @@ type SuccessProps = {
 export default function Success({ onAnimationComplete }: SuccessProps) {
   const riveComponentRef = useRef<RiveRef>(null);
   const { phaseIndex } = useLevelStore();
+  console.log('on success mount');
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     if (stateName === 'ExitState') {
@@ -32,7 +33,6 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
         resourceName="successscreens_21"
         artboardName={`success_${phaseIndex + 1} MAIN`}
         fit={Fit.Cover}
-        autoplay
         onStateChanged={handleStateChange}
         onRiveEventReceived={handleRiveEvent}
       />
