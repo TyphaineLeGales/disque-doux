@@ -1,6 +1,7 @@
+import * as Haptics from 'expo-haptics';
 import React, { useRef, useEffect } from 'react';
 import { View } from 'react-native';
-import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent, DataBindBy, AutoBind, BindByName, RNRiveErrorType, RNRiveError, BindByIndex } from 'rive-react-native';
+import Rive, { Fit, RiveRef, RiveGeneralEvent, RiveOpenUrlEvent, DataBindBy, AutoBind, BindByName, RNRiveErrorType, RNRiveError, BindByIndex, RiveEvent } from 'rive-react-native';
 
 type FindToolProps = {
   onDone: Function;
@@ -22,13 +23,21 @@ export default function FindTools(props: FindToolProps) {
     }
   };
 
+  const handleEvent = (event: RiveEvent) => {
+    switch (event.name) {
+      case 'Haptics':
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        break;
+    }
+  };
+
   return (
     <View className="h-full w-full flex-1">
       <Rive
         ref={riveRef}
         autoplay={true}
         dataBinding={AutoBind(true)}
-        resourceName="cherche_12"
+        resourceName="cherche_14"
         artboardName="Artboard"
         onError={(riveError: RNRiveError) => {
           switch (riveError.type) {
@@ -40,6 +49,7 @@ export default function FindTools(props: FindToolProps) {
               console.error('Unhandled error');
           }
         }}
+        onRiveEventReceived={handleEvent}
         onStateChanged={handleStateChange}
         fit={Fit.Cover}
         style={{
