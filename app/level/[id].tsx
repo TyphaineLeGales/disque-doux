@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -17,7 +17,6 @@ export default function Sequence() {
   const { phaseIndex, setPhaseIndex } = useLevelStore();
   const PHASES = ['FindTools', 'Clean', 'Disassemble', 'Assemble'];
   const [showSuccess, setShowSuccess] = useState(false);
-
   const [phaseProgress, setPhaseProgress] = useState(0);
 
   const onPhaseDone = () => {
@@ -38,8 +37,8 @@ export default function Sequence() {
   useBackgroundMusic();
 
   return (
-    <GestureHandlerRootView className="flex size-full flex-1">
-      <View className="flex size-full w-[100vw] flex-1">
+    <GestureHandlerRootView className="size-full flex-1">
+      <View className="size-full w-[100vw] flex-1">
         {!showSuccess && (
           <ProgressBar
             currentPhase={phaseIndex}
