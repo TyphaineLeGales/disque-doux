@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import Rive, { Fit, RiveRef } from 'rive-react-native';
+import Rive, { Fit, RiveEvent, RiveRef } from 'rive-react-native';
 
 import { useLevelStore } from '@/stores/levelStore';
 
@@ -15,12 +15,23 @@ export default function Assemble(props: AssembleProps) {
     setHideProgressBar(true);
   }, []);
 
+  const handleEvent = (event: RiveEvent) => {
+    switch (event.name) {
+      case 'Done':
+        props.onDone();
+        break;
+    }
+  };
+
+
   return (
     <Rive
       ref={riveComponentRef}
-      resourceName="assemble_motion_3"
+      resourceName="assemble_motion_5"
       fit={Fit.Cover}
+      artboardName='Artboard'
       style={{ pointerEvents: 'none' }}
+      onRiveEventReceived={handleEvent} 
     />
   );
 }
