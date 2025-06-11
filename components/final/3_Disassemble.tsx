@@ -63,6 +63,7 @@ export default function Disassemble(props: DisassembleProps) {
   const showScrewTuto = useRef(true);
   const screwsLeft = useRef<number[]>([1, 2, 3, 4]);
   const wiggleLeft = useRef(2);
+  const cleansLeft = useRef(3);
   const outsidePieces = useRef([1, 2, 3, 4, 5, 6, 7, 8]);
   const { setHideProgressBar } = useLevelStore();
 
@@ -122,6 +123,7 @@ export default function Disassemble(props: DisassembleProps) {
 
   const onCleanDone = () => {
     setHideProgressBar(false);
+    cleansLeft.current -= 1;
     riveRef?.current?.play();
     setShowClean(false);
 
@@ -284,7 +286,11 @@ export default function Disassemble(props: DisassembleProps) {
         <Wiggle onDone={onWiggleDone} showTuto={wiggleLeft.current === 2} />
       )}
       {showClean && (
-        <ToothbrushCleaning onDone={onCleanDone} showTuto={false} pieceId={cleanPieceId.current} />
+        <ToothbrushCleaning
+          onDone={onCleanDone}
+          showTuto={cleansLeft.current === 3}
+          pieceId={cleanPieceId.current}
+        />
       )}
     </View>
   );
