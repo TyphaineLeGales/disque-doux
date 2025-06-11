@@ -4,6 +4,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { withDecay, useSharedValue, useAnimatedReaction, runOnJS } from 'react-native-reanimated';
 import Rive, { Fit, RiveGeneralEvent, RiveRef } from 'rive-react-native'; // Adjust to your Rive version
 
+import { useInteractionSound } from '@/hooks/useInteractionSound';
 type ToothbrushCleaningProps = {
   onDone: Function;
   showTuto: boolean;
@@ -71,6 +72,7 @@ export default function ToothbrushCleaning(props: ToothbrushCleaningProps) {
       props.onDone();
     }
   };
+  useInteractionSound(progress, 'toothbrush');
 
   return (
     <View className="h-full w-full flex-1">

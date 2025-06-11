@@ -21,7 +21,7 @@ export default function Unscrew(props: DisassembleProps) {
   const prevAngle = useSharedValue(0);
   const progress = useSharedValue(0);
   const isDone = useRef(false);
-  useInteractionSound(progress);
+  useInteractionSound(progress, 'screwdriver');
 
   useEffect(() => {
     riveRefGame.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
