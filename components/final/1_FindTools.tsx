@@ -37,7 +37,7 @@ export default function FindTools(props: FindToolProps) {
         ref={riveRef}
         autoplay={true}
         dataBinding={AutoBind(true)}
-        resourceName="cherche_14"
+        resourceName="cherche_15"
         artboardName="Artboard"
         onError={(riveError: RNRiveError) => {
           switch (riveError.type) {

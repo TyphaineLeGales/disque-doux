@@ -19,7 +19,7 @@ export default function Assemble(props: AssembleProps) {
     <Rive
       ref={riveComponentRef}
       resourceName="assemble_motion_3"
-      fit={Fit.Contain}
+      fit={Fit.Cover}
       style={{ pointerEvents: 'none' }}
     />
   );
