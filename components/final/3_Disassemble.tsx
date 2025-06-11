@@ -256,7 +256,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble59"
+          resourceName="disassemble61"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
@@ -284,6 +284,10 @@ export default function Disassemble(props: DisassembleProps) {
         </View> */}
       </View>
 
+      <TutoDragDrop piecesInInventory={piecesInInventory.current} />
+      <TutoScrewdriver screwsLeft={screwsLeft.current} />
+      <TutoToothbrush piecesInInventory={piecesInInventory.current} />
+
       {showUnscrew && <Unscrew onDone={onScrewingDone} showTuto={showScrewTuto.current} />}
       {screwsLeft.current.length === 0 && showWiggle && (
         <Wiggle onDone={onWiggleDone} showTuto={wiggleLeft.current === 2} />
@@ -295,9 +299,6 @@ export default function Disassemble(props: DisassembleProps) {
           pieceId={cleanPieceId.current}
         />
       )}
-      <TutoDragDrop piecesInInventory={piecesInInventory.current} />
-      <TutoScrewdriver screwsLeft={screwsLeft.current} />
-      <TutoToothbrush piecesInInventory={piecesInInventory.current} />
     </View>
   );
 }

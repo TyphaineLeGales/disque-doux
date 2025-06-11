@@ -6,10 +6,10 @@ import Animated, {
   useSharedValue,
   useAnimatedReaction,
   runOnJS,
-  useAnimatedRef,
-  useAnimatedStyle,
 } from 'react-native-reanimated';
 import Rive, { Fit, RiveGeneralEvent, RiveRef } from 'rive-react-native';
+
+import { useInteractionSound } from '@/hooks/useInteractionSound';
 
 type WiggleProps = {
   onDone: Function;
@@ -22,9 +22,8 @@ export default function Wiggle(props: WiggleProps) {
   const progress = useSharedValue(0);
   const lastX = useSharedValue(0);
   const isDone = useRef(false);
-
+  useInteractionSound(progress, 'levier');
   useEffect(() => {
-    console.log('wiggle mounts');
     riveRefGame.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
     if (!props.showTuto) {
       riveRefGame.current?.setInputState('State Machine 1', 'open', true);
@@ -32,7 +31,6 @@ export default function Wiggle(props: WiggleProps) {
   }, []);
 
   const handleRiveEvent = (event: RiveGeneralEvent) => {
-    console.log('event', event.name);
     if (event.name === 'hidetuto') {
       riveRefTuto.current?.fireState('State Machine 1', 'hide');
       riveRefGame.current?.setInputState('State Machine 1', 'open', true);
@@ -71,7 +69,7 @@ export default function Wiggle(props: WiggleProps) {
       } else {
         isDone.current = true;
         riveRefGame.current?.fireState('State Machine 1', 'close');
-        setTimeout(props.onDone, 500);
+        setTimeout(props.onDone, 1500);
       }
     },
     [props.onDone]
@@ -88,12 +86,12 @@ export default function Wiggle(props: WiggleProps) {
   );
 
   return (
-    <View className="flex h-full w-full flex-1 bg-slate-50">
+    <View className="flex h-full w-full flex-1 ">
       <View className="relative z-30 h-full w-full">
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="separe2"
+            resourceName="pop_up_separe_7"
             artboardName="GameSepare"
             fit={Fit.Cover}
             onRiveEventReceived={handleRiveEvent}
@@ -104,7 +102,7 @@ export default function Wiggle(props: WiggleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="separe2"
+              resourceName="pop_up_separe_7"
               artboardName="TutoSepare"
               fit={Fit.Cover}
               onRiveEventReceived={handleRiveEvent}
