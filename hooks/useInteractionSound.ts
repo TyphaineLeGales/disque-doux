@@ -21,7 +21,6 @@ export const useInteractionSound = (progress: Animated.SharedValue<number>) => {
   };
 
   const startSoundLoop = () => {
-    console.log('startSoundLoop');
     if (intervalRef.current) return; // Already running
     intervalRef.current = setInterval(() => {
       playSound();

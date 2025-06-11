@@ -12,6 +12,8 @@ import Rive, {
 
 import ToothbrushCleaning from '@/components/rive/final/ToothbrushCleaning';
 import TutoDragDrop from '@/components/rive/final/TutoDragDrop';
+import TutoScrewdriver from '@/components/rive/final/TutoScrewdriver';
+import TutoToothbrush from '@/components/rive/final/TutoToothbrush';
 import Unscrew from '@/components/rive/final/Unscrew';
 import Wiggle from '@/components/rive/final/Wiggle';
 import { useLevelStore } from '@/stores/levelStore';
@@ -249,14 +251,12 @@ export default function Disassemble(props: DisassembleProps) {
     currPieceIndex.current += 1;
   };
 
-  // if piecesInInventory.current.length === 0 au bout de 3s show tuto
-
   return (
     <View className="flex h-full w-full flex-1 bg-[#FEF7E1]">
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble55"
+          resourceName="disassemble59"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
@@ -296,6 +296,8 @@ export default function Disassemble(props: DisassembleProps) {
         />
       )}
       <TutoDragDrop piecesInInventory={piecesInInventory.current} />
+      <TutoScrewdriver screwsLeft={screwsLeft.current} />
+      <TutoToothbrush piecesInInventory={piecesInInventory.current} />
     </View>
   );
 }

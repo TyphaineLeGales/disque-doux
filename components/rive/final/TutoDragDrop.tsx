@@ -28,9 +28,6 @@ export default function TutoDragDrop(props: TutoDragDropProps) {
     return () => clearTimeout(idleInterval.current);
   }, [props.piecesInInventory]);
 
-  useEffect(() => {
-    console.log('should show tuto drag and drop', showTuto);
-  }, [showTuto]);
   return (
     <View
       className={`${!showTuto ? 'pointer-events-none' : ''} absolute left-0 top-0 h-full w-full flex-1`}>
