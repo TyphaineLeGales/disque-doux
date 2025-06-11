@@ -12,12 +12,14 @@ type ToothbrushCleaningProps = {
 
 export default function ToothbrushCleaning(props: ToothbrushCleaningProps) {
   const riveRef = useRef<RiveRef>(null);
+  const tutoRiveRef = useRef<RiveRef>(null);
   const progress = useSharedValue(0);
   const lastY = useSharedValue(0);
   const isDone = useRef(false);
 
   useEffect(() => {
     riveRef.current?.setInputState('State Machine 1', 'objectID', props.pieceId);
+    riveRef.current?.setInputState('State Machine 1', 'showTuto', props.showTuto);
   }, []);
 
   const panGesture = useMemo(
@@ -76,12 +78,24 @@ export default function ToothbrushCleaning(props: ToothbrushCleaningProps) {
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRef}
-            resourceName="pop_up_nettoyage_7"
+            resourceName="pop_up_nettoyage_8"
             fit={Fit.Cover}
             style={{ width: '100%', pointerEvents: 'none' }}
             onRiveEventReceived={handleRiveEvent}
           />
         </View>
+        {props.showTuto && (
+          <View className="absolute top-0 h-full w-full">
+            <Rive
+              ref={tutoRiveRef}
+              resourceName="pop_up_nettoyage_8"
+              fit={Fit.Cover}
+              style={{ width: '100%', pointerEvents: 'none' }}
+              onRiveEventReceived={handleRiveEvent}
+              artboardName="TutoNettoie"
+            />
+          </View>
+        )}
       </View>
       <GestureDetector gesture={panGesture}>
         <View className="absolute h-full w-full">
