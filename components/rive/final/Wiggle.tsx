@@ -91,7 +91,7 @@ export default function Wiggle(props: WiggleProps) {
         <View className="absolute top-0 h-full w-full">
           <Rive
             ref={riveRefGame}
-            resourceName="pop_up_separe_7"
+            resourceName="pop_up_separe_8"
             artboardName="GameSepare"
             fit={Fit.Cover}
             onRiveEventReceived={handleRiveEvent}
@@ -102,7 +102,7 @@ export default function Wiggle(props: WiggleProps) {
           <View className="absolute top-0 h-full w-full">
             <Rive
               ref={riveRefTuto}
-              resourceName="pop_up_separe_7"
+              resourceName="pop_up_separe_8"
               artboardName="TutoSepare"
               fit={Fit.Cover}
               onRiveEventReceived={handleRiveEvent}
