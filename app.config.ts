@@ -13,7 +13,7 @@ const getIdentifier = () => {
 };
 
 const getAppName = () => {
-  let baseName = 'DiskDo';
+  let baseName = 'Petits soins';
   if (IS_DEV) baseName += '(dev)';
   if (IS_PREVIEW) baseName += '(preview)';
   return baseName;
@@ -45,14 +45,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-custom-assets',
       {
         assetsPaths: ['./rive'],
-      },
-    ],
-    [
-      'expo-build-properties',
-      {
-        ios: {
-          newArchEnabled: false, // 👈 disable Fabric & TurboModules
-        },
       },
     ],
   ],

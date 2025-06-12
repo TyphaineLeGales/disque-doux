@@ -157,6 +157,7 @@ export default function Disassemble(props: DisassembleProps) {
   const onToolDropped = () => {
     riveRef.current?.setInputStateAtPath('isOpen', false, 'toolLayer /toolbox');
     riveRef.current?.setInputStateAtPath('screwdriverSelected', false, 'toolLayer ');
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {

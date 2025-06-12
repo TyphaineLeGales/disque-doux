@@ -44,7 +44,7 @@
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.10",
     "react-navigation": "^5.0.0",
-    "rive-react-native": "^9.3.1",
+    "rive-react-native": "^9.3.4",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
