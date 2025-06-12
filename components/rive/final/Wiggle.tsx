@@ -78,11 +78,14 @@ export default function Wiggle(props: WiggleProps) {
 
   useAnimatedReaction(
     () => progress.value,
-    (val) => {
+    (val, prev) => {
       const scaled = val * 0.25; // 🧠 halve the input
       const clamped = Math.max(0, Math.min(scaled, 100));
       runOnJS(updateRiveState)(clamped);
-      // if (Math.abs(val - (lastX.value ?? 0)) > 5) {
+      // if (prev === null) return; // first run, skip haptic
+
+      // // Trigger haptics only when the change is significant
+      // if (Math.abs(val - prev) > 5) {
       //   runOnJS(() => {
       //     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       //   })();

@@ -100,16 +100,18 @@ export default function Unscrew(props: DisassembleProps) {
     [props.onDone]
   );
   // Track progress to give light haptics on rotation progress
-  const lastHapticAngle = useRef(0);
+  const lastHapticAngle = useSharedValue(0);
   useAnimatedReaction(
     () => angle.value,
-    (data) => {
-      const scaledProgress = data * SPEED; // convert angle (deg) to progress
+    (val, prev) => {
+      const scaledProgress = val * SPEED; // convert angle (deg) to progress
       progress.value = scaledProgress;
       runOnJS(updateRiveState)(scaledProgress);
-      // Give haptic every ~30 degrees of net movement
-      // if (Math.abs(data - lastHapticAngle.current) > 30) {
-      //   lastHapticAngle.current = data;
+
+      // if (prev === null) return; // first run, skip haptic
+      // // Give haptic every ~30 degrees of net movement
+      // if (Math.abs(val - lastHapticAngle.value) > 30) {
+      //   lastHapticAngle.value = val;
       //   runOnJS(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light))();
       // }
     },
