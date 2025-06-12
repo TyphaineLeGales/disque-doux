@@ -217,7 +217,7 @@ export default function Disassemble(props: DisassembleProps) {
     }
 
     if (event.name.includes('screwTarget')) {
-      console.log('in screw target');
+      console.log(event.name);
       const targetType = extractDirection(event.name)?.toLowerCase();
       const screwId = SCREWTARGETS[currViewIndex.current][targetType];
       onToolDropped();
@@ -257,7 +257,7 @@ export default function Disassemble(props: DisassembleProps) {
       <View className="absolute h-full w-full flex-1">
         <Rive
           ref={riveRef}
-          resourceName="disassemble62"
+          resourceName="disassemble64"
           artboardName="main"
           onStateChanged={handleStateChange}
           onRiveEventReceived={handleRiveEvent}
