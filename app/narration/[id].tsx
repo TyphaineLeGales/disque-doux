@@ -17,7 +17,7 @@ export default function Sequence() {
     <Pressable className="size-full" onPress={onNext}>
       <Rive
         ref={riveComponentRef}
-        resourceName="start_final_2"
+        resourceName="start_narration_2"
         artboardName="Narration"
         fit={Fit.Cover}
         style={{ pointerEvents: 'none' }}

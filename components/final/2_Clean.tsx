@@ -196,17 +196,18 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
 
     return () => clearTimeout(timer);
   }, [hasDragged, riveRef]);
-  
+
   useEffect(() => {
     setIsInStain(false);
     setIsDragging(false);
   }, [riveRef]);
 
   useEffect(() => {
-    if(!riveRef.current) return 
-    if(faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) return
+    if (!riveRef.current) return;
+    if (faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100)
+      return;
 
-    if(isInStain && isDragging) {
+    if (isInStain && isDragging) {
       riveRef.current.setInputStateAtPath('isOpen', false, 'toolbox');
       riveRef.current.fireState('main', 'NettoyageIn');
       riveRef.current.setInputState('main', 'NettoyageMiddle', true);
@@ -214,31 +215,31 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
   }, [isInStain, isDragging, riveRef, currentFaceId, faceStates]);
 
   useEffect(() => {
-    if(!riveRef.current) return
-    if(!hasDragged) return
-    if(faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) {
+    if (!riveRef.current) return;
+    if (!hasDragged) return;
+    if (faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) {
       riveRef.current.setInputState('main', 'NettoyageMiddle', false);
       return;
     }
 
-    if(!isDragging && isInStain) {
+    if (!isDragging && isInStain) {
       riveRef.current.fireState('main', 'NettoyageOut');
       riveRef.current.setInputState('main', 'NettoyageMiddle', false);
-    } 
+    }
   }, [isDragging, currentFaceId, faceStates]);
 
   useEffect(() => {
-    if(!riveRef.current) return
-    if(!hasDragged) return
-    if(faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) {
+    if (!riveRef.current) return;
+    if (!hasDragged) return;
+    if (faceStates[currentFaceId - 1].isCleaned || faceStates[currentFaceId - 1].opacity === 100) {
       riveRef.current.setInputState('main', 'NettoyageMiddle', false);
       return;
     }
 
-    if(!isInStain) {
+    if (!isInStain) {
       riveRef.current.fireState('main', 'NettoyageOut');
       riveRef.current.setInputState('main', 'NettoyageMiddle', false);
-    } 
+    }
   }, [isInStain, currentFaceId, faceStates]);
 
   return (
@@ -246,7 +247,7 @@ export default function Clean({ debug = false, onDone, onProgress, ...props }: C
       <View style={StyleSheet.absoluteFill}>
         <Rive
           ref={riveRef}
-          resourceName="nettoyage_37"
+          resourceName="nettoyage_38"
           fit={Fit.Cover}
           artboardName="Clean"
           onRiveEventReceived={handleEvent}

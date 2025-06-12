@@ -12,7 +12,6 @@ type SuccessProps = {
 export default function Success({ onAnimationComplete }: SuccessProps) {
   const riveComponentRef = useRef<RiveRef>(null);
   const { phaseIndex } = useLevelStore();
-  console.log('on success mount');
 
   const handleStateChange = (stateMachineName: string, stateName: string) => {
     if (stateName === 'ExitState') {
@@ -23,9 +22,7 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
   const handleRiveEvent = (event: RiveGeneralEvent | RiveOpenUrlEvent) => {
     if (event.name === 'Pressed') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-
-    else if (event.name === 'Done') {
+    } else if (event.name === 'Done') {
       // go to end screen
     }
   };
@@ -34,7 +31,7 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
     <View className="absolute bottom-0 left-0 right-0 top-0">
       <Rive
         ref={riveComponentRef}
-        resourceName="successscreens_22"
+        resourceName="successscreens_23"
         artboardName={`success_${phaseIndex + 1} MAIN`}
         fit={Fit.Cover}
         onStateChanged={handleStateChange}

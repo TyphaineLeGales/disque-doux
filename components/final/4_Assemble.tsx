@@ -23,15 +23,14 @@ export default function Assemble(props: AssembleProps) {
     }
   };
 
-
   return (
     <Rive
       ref={riveComponentRef}
-      resourceName="assemble_motion_6"
+      resourceName="assemble_motion_9"
       fit={Fit.Cover}
-      artboardName='Artboard'
+      artboardName="Artboard"
       style={{ pointerEvents: 'none' }}
-      onRiveEventReceived={handleEvent} 
+      onRiveEventReceived={handleEvent}
     />
   );
 }

@@ -17,7 +17,7 @@ export const useInteractionSound = (progress: Animated.SharedValue<number>, tool
   const loadSound = async () => {
     const { sound } = await Audio.Sound.createAsync(SOUND_MAP[toolName], {
       shouldPlay: false,
-      volume: 0.9,
+      volume: 1,
     });
     soundRef.current = sound;
   };
