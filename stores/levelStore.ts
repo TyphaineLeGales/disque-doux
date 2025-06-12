@@ -15,7 +15,7 @@ export const useLevelStore = create<LevelStore>((set) => ({
   hideProgressBar: false,
   setHideProgressBar: (val) => set({ hideProgressBar: val }),
   level: 0,
-  phaseIndex: 2,
+  phaseIndex: 1,
   setLevel: (val) => set({ level: val }),
   setPhaseIndex: (index) => {
     set({ phaseIndex: index });

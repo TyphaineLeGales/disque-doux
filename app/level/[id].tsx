@@ -28,6 +28,7 @@ export default function Sequence() {
   const handleSuccessComplete = () => {
     setShowSuccess(false);
     setPhaseIndex(phaseIndex + 1);
+    setPhaseProgress(0);
   };
 
   const updatePhaseProgress = (progress: number) => {
