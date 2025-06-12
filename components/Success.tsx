@@ -24,13 +24,17 @@ export default function Success({ onAnimationComplete }: SuccessProps) {
     if (event.name === 'Pressed') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+
+    else if (event.name === 'Done') {
+      // go to end screen
+    }
   };
 
   return (
     <View className="absolute bottom-0 left-0 right-0 top-0">
       <Rive
         ref={riveComponentRef}
-        resourceName="successscreens_21"
+        resourceName="successscreens_22"
         artboardName={`success_${phaseIndex + 1} MAIN`}
         fit={Fit.Cover}
         onStateChanged={handleStateChange}
