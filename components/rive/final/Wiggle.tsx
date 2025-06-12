@@ -82,11 +82,11 @@ export default function Wiggle(props: WiggleProps) {
       const scaled = val * 0.25; // 🧠 halve the input
       const clamped = Math.max(0, Math.min(scaled, 100));
       runOnJS(updateRiveState)(clamped);
-      if (Math.abs(val - (lastX.value ?? 0)) > 5) {
-        runOnJS(() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        })();
-      }
+      // if (Math.abs(val - (lastX.value ?? 0)) > 5) {
+      //   runOnJS(() => {
+      //     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      //   })();
+      // }
     },
     [updateRiveState]
   );

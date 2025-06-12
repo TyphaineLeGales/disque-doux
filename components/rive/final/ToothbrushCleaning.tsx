@@ -64,11 +64,11 @@ export default function ToothbrushCleaning(props: ToothbrushCleaningProps) {
       const clamped = Math.max(0, Math.min(scaled, 100));
       console.log(clamped);
       runOnJS(updateRiveState)(clamped);
-      if (Math.abs(val - (lastY.value ?? 0)) > 5) {
-        runOnJS(() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        })();
-      }
+      // if (Math.abs(val - (lastY.value ?? 0)) > 5) {
+      //   runOnJS(() => {
+      //     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      //   })();
+      // }
     },
     [updateRiveState]
   );
