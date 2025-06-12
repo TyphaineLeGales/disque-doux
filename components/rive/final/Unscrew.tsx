@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import { Dimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -92,18 +93,25 @@ export default function Unscrew(props: DisassembleProps) {
       } else {
         isDone.current = true;
         riveRefGame.current?.fireState('State Machine 1', 'onScrewDone');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         setTimeout(props.onDone, 500);
       }
     },
     [props.onDone]
   );
-
+  // Track progress to give light haptics on rotation progress
+  const lastHapticAngle = useRef(0);
   useAnimatedReaction(
     () => angle.value,
     (data) => {
       const scaledProgress = data * SPEED; // convert angle (deg) to progress
       progress.value = scaledProgress;
       runOnJS(updateRiveState)(scaledProgress);
+      // Give haptic every ~30 degrees of net movement
+      if (Math.abs(data - lastHapticAngle.current) > 30) {
+        lastHapticAngle.current = data;
+        runOnJS(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light))();
+      }
     },
     [updateRiveState]
   );

@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import React, { useMemo, useEffect, useRef, useCallback } from 'react';
 import { Dimensions, View, Text } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -63,6 +64,11 @@ export default function ToothbrushCleaning(props: ToothbrushCleaningProps) {
       const clamped = Math.max(0, Math.min(scaled, 100));
       console.log(clamped);
       runOnJS(updateRiveState)(clamped);
+      if (Math.abs(val - (lastY.value ?? 0)) > 5) {
+        runOnJS(() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        })();
+      }
     },
     [updateRiveState]
   );
